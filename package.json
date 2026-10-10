@@ -1,0 +1,194 @@
+{
+  "name": "little-code",
+  "displayName": "Little Code",
+  "description": "Your AI-native coding companion. Built by Priyanshu Chaurasia.",
+  "version": "0.2.0",
+  "publisher": "priyanshu-chaurasia",
+  "private": true,
+  "engines": {
+    "vscode": "^1.96.0",
+    "node": ">=22"
+  },
+  "main": "./dist/extension.cjs",
+  "activationEvents": [
+    "onStartupFinished",
+    "onView:little.agent"
+  ],
+  "categories": [
+    "Machine Learning",
+    "Other"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "lint": "eslint src tests",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build",
+    "codeoss:setup": "node scripts/setup-codeoss.mjs",
+    "desktop:prepare": "npm run build && node scripts/prepare-desktop.mjs",
+    "desktop:build": "node scripts/build-desktop.mjs",
+    "desktop:start": "node scripts/start-desktop.mjs",
+    "desktop:agent": "node scripts/update-desktop-agent.mjs",
+    "desktop:smoke": "node scripts/smoke-desktop.mjs",
+    "desktop:smoke-repository": "node scripts/smoke-desktop.mjs --repository",
+    "desktop:smoke-commands": "node scripts/smoke-command-host.mjs",
+    "desktop:smoke-features": "node scripts/smoke-features.mjs",
+    "website:check": "node scripts/check-website.mjs",
+    "website:build": "node scripts/build-website.mjs",
+    "website:dev": "node scripts/serve-website.mjs",
+    "repository:audit": "node scripts/repository-audit.mjs",
+    "release:check": "node scripts/github-release-check.mjs"
+  },
+  "contributes": {
+    "configurationDefaults": {
+      "window.commandCenter": true
+    },
+    "commands": [
+      {
+        "command": "little.openWelcome",
+        "title": "Little: Open Home"
+      },
+      {
+        "command": "little.openAgent",
+        "title": "Little: Focus Agent"
+      },
+      {
+        "command": "little.toggleAppearance",
+        "title": "Little: Toggle Light / Dark Appearance"
+      },
+      {
+        "command": "little.configureGroq",
+        "title": "Little: Configure Groq API Key"
+      },
+      {
+        "command": "little.configureOllama",
+        "title": "Little: Configure Ollama"
+      },
+      {
+        "command": "little.removeGroqKey",
+        "title": "Little: Remove Groq API Key"
+      },
+      {
+        "command": "little.restoreCheckpoint",
+        "title": "Little: Restore Checkpoint"
+      },
+      {
+        "command": "little.reviewGit",
+        "title": "Little: Review Git Changes"
+      },
+      {
+        "command": "little.configureBrowser",
+        "title": "Little: Configure Local Browser Preview"
+      },
+      {
+        "command": "little.inspectBrowser",
+        "title": "Little: Inspect Local App"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "little",
+          "title": "Little Code",
+          "icon": "resources/app/little-mark.svg"
+        }
+      ]
+    },
+    "views": {
+      "little": [
+        {
+          "type": "webview",
+          "id": "little.agent",
+          "name": "Little Agent"
+        }
+      ]
+    },
+    "themes": [
+      {
+        "label": "Little Dark / Neo Aurora",
+        "uiTheme": "vs-dark",
+        "path": "resources/themes/little-dark.json"
+      },
+      {
+        "label": "Little Light / Paper Aurora",
+        "uiTheme": "vs",
+        "path": "resources/themes/little-light.json"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "little.openAgent",
+        "key": "ctrl+alt+l",
+        "mac": "cmd+alt+l"
+      }
+    ],
+    "configuration": {
+      "title": "Little Code",
+      "properties": {
+        "little.model": {
+          "type": "string",
+          "default": "",
+          "description": "Discovered Groq model to use. Choose in the Little panel.",
+          "scope": "application"
+        },
+        "little.provider": {
+          "type": "string",
+          "enum": [
+            "groq",
+            "ollama"
+          ],
+          "default": "groq",
+          "description": "AI provider selected in Little Code.",
+          "scope": "application"
+        },
+        "little.ollamaEndpoint": {
+          "type": "string",
+          "default": "http://127.0.0.1:11434",
+          "description": "Loopback Ollama origin. Remote hosts, credentials, paths and redirects are rejected.",
+          "scope": "application"
+        },
+        "little.ollamaModel": {
+          "type": "string",
+          "default": "",
+          "description": "Installed Ollama model selected in Little Code.",
+          "scope": "application"
+        },
+        "little.userPreferences": {
+          "type": "string",
+          "default": "",
+          "description": "Optional personal conventions included in bounded context; never grants tool permissions.",
+          "scope": "application"
+        },
+        "little.browserEndpoint": {
+          "type": "string",
+          "default": "http://127.0.0.1:9222",
+          "scope": "application",
+          "description": "Running isolated Chromium loopback debug endpoint for approved local-app snapshots. Little only creates its own temporary tab."
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@thednp/dommatrix": "3.1.2",
+    "fast-xml-parser": "5.11.2",
+    "fflate": "0.8.3",
+    "ignore": "^7.0.5",
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "6.4.299",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/vscode": "^1.96.0",
+    "esbuild": "^0.25.12",
+    "eslint": "^9.39.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}

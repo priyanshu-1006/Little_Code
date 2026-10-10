@@ -1,0 +1,15 @@
+{
+  "name": "Little Code",
+  "version": "0.2.0",
+  "releaseDate": "2026-10-10",
+  "repository": "https://github.com/priyanshu-1006/Little_Code",
+  "releaseTag": "v0.2.0",
+  "releaseApi": "https://api.github.com/repos/priyanshu-1006/Little_Code/releases/tags/v0.2.0",
+  "releasePage": "https://github.com/priyanshu-1006/Little_Code/releases",
+  "fileName": "LittleCode-0.2.0-CodeOSS-1.141.0-win32-x64-UserSetup.exe",
+  "bytes": 347143376,
+  "sha256": "32ec825e0b94fadab7613dd453ca000c0aab5de19003b3bc65d11129b1a57369",
+  "platform": "Windows 10 / 11 · x64",
+  "unsigned": true,
+  "localFile": "desktop/releases/2026-10-10T04-49-25-203Z-08a1f71c/LittleCode-0.2.0-CodeOSS-1.141.0-win32-x64-UserSetup.exe"
+}

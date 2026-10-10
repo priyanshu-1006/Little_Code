@@ -1,0 +1,83 @@
+:root {
+  --little-bg-canvas: #090B10;
+  --little-bg-primary: #111620;
+  --little-bg-panel: #151C28;
+  --little-bg-raised: #18202D;
+  --little-bg-hover: #202A3A;
+  --little-border-subtle: #283344;
+  --little-border-strong: #40516A;
+  --little-text-primary: #F5F7FB;
+  --little-text-secondary: #B6C2D5;
+  --little-text-muted: #8191A9;
+  --little-text-disabled: #515969;
+  --little-text-on-accent: #FFFFFF;
+  --little-violet: #9A78FF;
+  --little-button-accent: #7655D9;
+  --little-cyan: #54D8ED;
+  --little-rose: #EC4899;
+  --little-success: #34D399;
+  --little-warning: #FBBF24;
+  --little-danger: #FB7185;
+  --little-info: #60A5FA;
+  --little-agent-gradient: linear-gradient(135deg, var(--little-violet) 0%, var(--little-cyan) 52%, var(--little-rose) 100%);
+  --little-focus: var(--vscode-focusBorder, var(--little-cyan));
+  --little-font-ui: Inter, var(--vscode-font-family), 'Segoe UI', sans-serif;
+  --little-font-brand: 'Space Grotesk', Inter, var(--vscode-font-family), 'Segoe UI', sans-serif;
+  --little-font-code: 'JetBrains Mono', var(--vscode-editor-font-family), monospace;
+  --little-control-radius: 10px;
+  --little-card-radius: 16px;
+  --little-shadow-card: 0 8px 28px #0000001A;
+  --little-shadow-float: 0 10px 36px #00000035;
+  --little-motion-fast: 160ms;
+  --little-motion-enter: 320ms;
+  --little-ease-out: cubic-bezier(.2, .8, .2, 1);
+  color-scheme: dark;
+}
+
+body.vscode-light {
+  --little-bg-canvas: #F6F5F1;
+  --little-bg-primary: #FFFFFF;
+  --little-bg-panel: #EFEEFA;
+  --little-bg-raised: #FFFFFF;
+  --little-bg-hover: #E8E5F4;
+  --little-border-subtle: #DADBE7;
+  --little-border-strong: #AFB5C9;
+  --little-text-primary: #202333;
+  --little-text-secondary: #505A70;
+  --little-text-muted: #667087;
+  --little-text-disabled: #7D8799;
+  --little-violet: #7251D6;
+  --little-button-accent: #7251D6;
+  --little-cyan: #087C96;
+  --little-rose: #BA327C;
+  --little-info: #315FC2;
+  --little-success: #08795D;
+  --little-danger: #B42345;
+  --little-warning: #926000;
+  --little-shadow-card: 0 8px 28px #28304409;
+  --little-shadow-float: 0 10px 36px #28304414;
+  color-scheme: light;
+}
+
+body.vscode-high-contrast,
+body.vscode-high-contrast-light {
+  --little-bg-canvas: var(--vscode-editor-background);
+  --little-bg-primary: var(--vscode-editor-background);
+  --little-bg-panel: var(--vscode-sideBar-background);
+  --little-bg-raised: var(--vscode-editor-background);
+  --little-bg-hover: var(--vscode-list-hoverBackground);
+  --little-border-subtle: var(--vscode-contrastBorder, var(--vscode-foreground));
+  --little-border-strong: var(--vscode-contrastBorder, var(--vscode-foreground));
+  --little-text-primary: var(--vscode-foreground);
+  --little-text-secondary: var(--vscode-foreground);
+  --little-text-muted: var(--vscode-foreground);
+  --little-text-disabled: var(--vscode-disabledForeground);
+  --little-text-on-accent: var(--vscode-button-foreground);
+  --little-button-accent: var(--vscode-button-background);
+  --little-violet: var(--vscode-textLink-foreground);
+  --little-cyan: var(--vscode-textLink-foreground);
+  --little-shadow-card: none;
+  --little-shadow-float: none;
+}
+
+body.vscode-high-contrast-light { color-scheme: light; }

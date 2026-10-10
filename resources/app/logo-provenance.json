@@ -1,0 +1,11 @@
+{
+  "source": "Little_code_logo.png",
+  "sourceSha256": "cb43bcfe4ae81b14acb48e1f2a4f7493914d14b61a5bdc6e31ab168011e97060",
+  "sourceBytes": 896052,
+  "sourceWidth": 1312,
+  "sourceHeight": 1199,
+  "sourceHasAlpha": true,
+  "userSupplied": true,
+  "canonicalPng": "resources/app/little-logo.png",
+  "transformations": "Format conversion and proportional area resampling only. Complete source canvas preserved; no crop, recoloring, added tile, or replacement artwork."
+}

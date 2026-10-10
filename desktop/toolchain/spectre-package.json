@@ -1,0 +1,26 @@
+{
+  "componentId": "Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre",
+  "packageId": "Microsoft.VC.14.29.16.11.CRT.x64.Desktop.spectre.base",
+  "packageVersion": "14.29.30156",
+  "toolsetDirectory": "14.29.30133",
+  "architecture": "x64",
+  "catalog": {
+    "product": "Visual Studio Build Tools 2019",
+    "version": "16.11.50+36324.18",
+    "source": "C:\\ProgramData\\Microsoft\\VisualStudio\\Packages\\_Instances\\88ad40ff\\catalog.json",
+    "channel": "https://aka.ms/vs/16/release/channel"
+  },
+  "payload": {
+    "fileName": "Microsoft.VC.14.29.16.11.CRT.x64.Desktop.spectre.base.vsix",
+    "url": "https://download.visualstudio.microsoft.com/download/pr/5864ea9c-3c18-4b73-9893-5a8c6916acf3/76a0f3285ed1596962ec6ac740ad922ba4936b02fa2e5cc1f01f45e850f210ed/Microsoft.VC.14.29.16.11.CRT.x64.Desktop.spectre.base.vsix",
+    "sha256": "76a0f3285ed1596962ec6ac740ad922ba4936b02fa2e5cc1f01f45e850f210ed",
+    "catalogSize": 49102302,
+    "size": 48373873,
+    "sizeNote": "The downloaded public payload matches the catalog SHA256 exactly; its verified byte length differs from the catalog size field."
+  },
+  "verifiedExtraction": {
+    "libraryFileCount": 73,
+    "libraryBytes": 206202947
+  },
+  "documentation": "https://learn.microsoft.com/en-us/visualstudio/msbuild/errors/msb8040"
+}

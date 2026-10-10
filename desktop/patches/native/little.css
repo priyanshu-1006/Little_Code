@@ -1,0 +1,57 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+@import url('./media/fonts/fonts.css');
+
+/* Little uses native parts and theme colors. The editor remains the primary surface. */
+.little-code .monaco-workbench {
+	font-family: Inter, 'Segoe UI', sans-serif;
+}
+
+.little-code .part.titlebar .command-center .search-label::before {
+	content: '';
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	margin-inline-end: 8px;
+	vertical-align: 2px;
+	border-radius: var(--vscode-cornerRadius-small, 4px);
+	background: var(--vscode-progressBar-background);
+}
+
+.little-code .part.auxiliarybar .title-label h2 {
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+/* The same outline icon family serves the new navigator and the real native rail. */
+.little-code .little-shell-icon,
+.little-code .part.activitybar .action-label:is(.codicon-explorer-view-icon, .codicon-search-view-icon, .codicon-source-control-view-icon, .codicon-run-view-icon, .codicon-extensions-view-icon, .codicon-settings-gear, .codicon-gear)::before,
+.little-code :is(.part.sidebar, .part.auxiliarybar) > :is(.title, .header-or-footer) .action-label:is(.codicon-explorer-view-icon, .codicon-search-view-icon, .codicon-source-control-view-icon, .codicon-run-view-icon, .codicon-extensions-view-icon)::before {
+	content: '';
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	flex: 0 0 16px;
+	background-color: currentColor;
+	mask-position: center;
+	mask-size: contain;
+	mask-repeat: no-repeat;
+}
+
+.little-code .little-shell-icon-home { mask-image: url('./media/icons/little-home.svg'); }
+.little-code .little-shell-icon-files,
+.little-code .action-label.codicon-explorer-view-icon::before { mask-image: url('./media/icons/little-files.svg'); }
+.little-code .little-shell-icon-search,
+.little-code .action-label.codicon-search-view-icon::before { mask-image: url('./media/icons/little-search.svg'); }
+.little-code .little-shell-icon-git,
+.little-code .action-label.codicon-source-control-view-icon::before { mask-image: url('./media/icons/little-git.svg'); }
+.little-code .little-shell-icon-terminal { mask-image: url('./media/icons/little-terminal.svg'); }
+.little-code .little-shell-icon-agent { mask-image: url('./media/icons/little-agent.svg'); }
+.little-code .little-appearance-light .little-shell-icon { mask-image: url('./media/icons/little-sun.svg'); }
+.little-code .little-appearance-dark .little-shell-icon { mask-image: url('./media/icons/little-moon.svg'); }
+.little-code .action-label.codicon-run-view-icon::before { mask-image: url('./media/icons/little-run.svg'); }
+.little-code .action-label.codicon-extensions-view-icon::before { mask-image: url('./media/icons/little-extensions.svg'); }
+.little-code .part.activitybar .action-label:is(.codicon-settings-gear, .codicon-gear)::before { mask-image: url('./media/icons/little-settings.svg'); }

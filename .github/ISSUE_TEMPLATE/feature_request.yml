@@ -1,0 +1,17 @@
+name: Feature request
+description: Describe a useful workflow or product improvement.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to accomplish?
+      description: Explain the workflow and the limitation you face.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the user-visible result and how you would verify it.
+    validations:
+      required: true

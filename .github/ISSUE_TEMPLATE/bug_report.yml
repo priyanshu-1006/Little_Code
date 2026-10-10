@@ -1,0 +1,32 @@
+name: Bug report
+description: Report a reproducible Little Code problem.
+body:
+  - type: markdown
+    attributes:
+      value: Do not include API keys, private source, conversation databases or unredacted diagnostic logs. Share safe error codes and minimal public fixtures.
+  - type: input
+    id: version
+    attributes:
+      label: Little Code version and operating system
+      placeholder: 0.2.0, Windows 11 x64
+    validations:
+      required: true
+  - type: input
+    id: provider
+    attributes:
+      label: Provider and model, if relevant
+      placeholder: Groq / GPT OSS 120B or Ollama / installed model
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Include the selected Ask, Plan, Edit or Agent mode and a safe example prompt.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Expected behavior and actual result
+      description: Include a safe error code and whether a review, accepted change or checkpoint occurred.
+    validations:
+      required: true

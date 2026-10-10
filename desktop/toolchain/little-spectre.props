@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(LittlePreviousForceImportBeforeCppTargets)"
+          Condition="'$(LittlePreviousForceImportBeforeCppTargets)' != '' and '$(LittlePreviousForceImportBeforeCppTargets)' != '$(MSBuildThisFileFullPath)' and Exists('$(LittlePreviousForceImportBeforeCppTargets)')" />
+  <PropertyGroup Condition="'$(Platform)' == 'x64' and '$(VCToolsVersion)' == '14.29.30133' and '$(SpectreMitigation)' != '' and '$(SpectreMitigation)' != 'false'">
+    <LittleSpectreLibraryPath>$(MSBuildThisFileDirectory)msvc-v142-spectre\Contents\VC\Tools\MSVC\14.29.30133\lib\spectre\x64</LittleSpectreLibraryPath>
+    <VC_LibraryPath_VC_x64_Desktop_spectre>$(LittleSpectreLibraryPath)</VC_LibraryPath_VC_x64_Desktop_spectre>
+    <VC_LibraryPath_VC_Desktop_CurrentPlatform_spectre>$(LittleSpectreLibraryPath)</VC_LibraryPath_VC_Desktop_CurrentPlatform_spectre>
+    <_VC_LibraryPath_VC_x64_Desktop>$(LittleSpectreLibraryPath)</_VC_LibraryPath_VC_x64_Desktop>
+    <LibraryPath>$(LittleSpectreLibraryPath);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+</Project>

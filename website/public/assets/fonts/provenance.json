@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "license": "SIL Open Font License 1.1",
+  "files": [
+    {
+      "file": "space-grotesk-variable.ttf",
+      "family": "Space Grotesk",
+      "kind": "font",
+      "repository": "https://github.com/floriankarsten/space-grotesk",
+      "commit": "7220f5d04813fe83babe76d4fd23e02275021280",
+      "source": "https://raw.githubusercontent.com/floriankarsten/space-grotesk/7220f5d04813fe83babe76d4fd23e02275021280/fonts/ttf/SpaceGrotesk%5Bwght%5D.ttf",
+      "bytes": 136676,
+      "sha256": "acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72",
+      "releaseTag": "2.0.0",
+      "release": "https://github.com/floriankarsten/space-grotesk/releases/tag/2.0.0",
+      "font": {
+        "family": "Space Grotesk",
+        "style": "normal",
+        "version": "Version 2.000",
+        "axes": [
+          {
+            "tag": "wght",
+            "min": 300,
+            "default": 300,
+            "max": 700
+          }
+        ],
+        "modified": false,
+        "coverage": "Complete unmodified upstream release font; includes Latin"
+      }
+    },
+    {
+      "file": "space-grotesk-OFL.txt",
+      "family": "Space Grotesk",
+      "kind": "license",
+      "repository": "https://github.com/floriankarsten/space-grotesk",
+      "commit": "7220f5d04813fe83babe76d4fd23e02275021280",
+      "source": "https://raw.githubusercontent.com/floriankarsten/space-grotesk/7220f5d04813fe83babe76d4fd23e02275021280/OFL.txt",
+      "bytes": 4495,
+      "sha256": "564ce565c371c5e5bbf286006565a7c9aa55a9f56e7ca58d56e05d649dd61a72",
+      "releaseTag": "2.0.0",
+      "release": "https://github.com/floriankarsten/space-grotesk/releases/tag/2.0.0"
+    },
+    {
+      "file": "inter-variable.woff2",
+      "family": "Inter",
+      "kind": "font",
+      "repository": "https://github.com/rsms/inter",
+      "commit": "e3a3d4c57d5ecc01453a575621882a384c1995a3",
+      "source": "https://raw.githubusercontent.com/rsms/inter/e3a3d4c57d5ecc01453a575621882a384c1995a3/docs/font-files/InterVariable.woff2",
+      "bytes": 352240,
+      "sha256": "693b77d4f32ee9b8bfc995589b5fad5e99adf2832738661f5402f9978429a8e3",
+      "releaseTag": "v4.1",
+      "release": "https://github.com/rsms/inter/releases/tag/v4.1",
+      "font": {
+        "family": "Inter Variable",
+        "style": "normal",
+        "version": "Version 4.001;git-9221beed3",
+        "axes": [
+          {
+            "tag": "opsz",
+            "min": 14,
+            "default": 14,
+            "max": 32
+          },
+          {
+            "tag": "wght",
+            "min": 100,
+            "default": 400,
+            "max": 900
+          }
+        ],
+        "modified": false,
+        "coverage": "Complete unmodified upstream release font; includes Latin"
+      }
+    },
+    {
+      "file": "inter-OFL.txt",
+      "family": "Inter",
+      "kind": "license",
+      "repository": "https://github.com/rsms/inter",
+      "commit": "e3a3d4c57d5ecc01453a575621882a384c1995a3",
+      "source": "https://raw.githubusercontent.com/rsms/inter/e3a3d4c57d5ecc01453a575621882a384c1995a3/LICENSE.txt",
+      "bytes": 4380,
+      "sha256": "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a",
+      "releaseTag": "v4.1",
+      "release": "https://github.com/rsms/inter/releases/tag/v4.1"
+    },
+    {
+      "file": "jetbrains-mono-variable.ttf",
+      "family": "JetBrains Mono",
+      "kind": "font",
+      "repository": "https://github.com/JetBrains/JetBrainsMono",
+      "commit": "cd5227bd1f61dff3bbd6c814ceaf7ffd95e947d9",
+      "source": "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/cd5227bd1f61dff3bbd6c814ceaf7ffd95e947d9/fonts/variable/JetBrainsMono%5Bwght%5D.ttf",
+      "bytes": 303144,
+      "sha256": "662a196d58f1183bf2d77428b6d5283fe3f45161ab021bea4036bc98e5cac016",
+      "releaseTag": "v2.304",
+      "release": "https://github.com/JetBrains/JetBrainsMono/releases/tag/v2.304",
+      "font": {
+        "family": "JetBrains Mono",
+        "style": "normal",
+        "version": "Version 2.304",
+        "axes": [
+          {
+            "tag": "wght",
+            "min": 100,
+            "default": 400,
+            "max": 800
+          }
+        ],
+        "modified": false,
+        "coverage": "Complete unmodified upstream release font; includes Latin"
+      }
+    },
+    {
+      "file": "jetbrains-mono-OFL.txt",
+      "family": "JetBrains Mono",
+      "kind": "license",
+      "repository": "https://github.com/JetBrains/JetBrainsMono",
+      "commit": "cd5227bd1f61dff3bbd6c814ceaf7ffd95e947d9",
+      "source": "https://raw.githubusercontent.com/JetBrains/JetBrainsMono/cd5227bd1f61dff3bbd6c814ceaf7ffd95e947d9/OFL.txt",
+      "bytes": 4399,
+      "sha256": "30f0c136e3c88e422d0791acd97238870f9054a9729bc34cf2ff0d4ed8cac4ad",
+      "releaseTag": "v2.304",
+      "release": "https://github.com/JetBrains/JetBrainsMono/releases/tag/v2.304"
+    }
+  ]
+}

@@ -1,0 +1,296 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+/* Loaded after the native platform styles. Font faces are bundled in the main stylesheet. */
+.little-code .monaco-workbench.windows,
+.little-code .monaco-workbench.mac,
+.little-code .monaco-workbench.linux {
+	font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Little's native navigation stays separate from editor content and window controls. */
+.little-code .part.titlebar .titlebar-container.little-has-navigation > .titlebar-left {
+	order: 0;
+	width: auto;
+	flex: 0 0 auto;
+}
+
+.little-code .part.titlebar .titlebar-container.little-has-navigation > .titlebar-center {
+	order: 2;
+	width: auto;
+	max-width: none;
+	min-width: 0;
+	flex: 1 1 0;
+	margin-inline: var(--vscode-spacing-size80, 8px);
+}
+
+.little-code .part.titlebar .titlebar-container.little-has-navigation > .titlebar-right {
+	order: 3;
+	width: auto;
+	flex: 0 0 auto;
+}
+
+.little-code .little-native-shell {
+	position: relative;
+	z-index: 2500;
+	order: 1;
+	display: flex;
+	align-items: center;
+	gap: var(--vscode-spacing-size120, 12px);
+	flex: 0 0 auto;
+	min-width: 0;
+	padding-inline: var(--vscode-spacing-size60, 6px);
+	-webkit-app-region: no-drag;
+}
+
+.little-code .little-shell-brand {
+	display: flex;
+	align-items: center;
+	gap: var(--vscode-spacing-size60, 6px);
+	white-space: nowrap;
+	color: var(--vscode-titleBar-activeForeground);
+	font-size: var(--vscode-fontSize-label1, 12px);
+	font-weight: var(--vscode-fontWeight-semiBold, 600);
+	letter-spacing: -.02em;
+}
+
+.little-code .little-shell-logo {
+	width: 28px;
+	height: 28px;
+	object-fit: contain;
+	pointer-events: none;
+}
+
+.little-code .little-shell-navigator {
+	display: flex;
+	align-items: center;
+	gap: var(--vscode-spacing-size20, 2px);
+	padding: var(--vscode-spacing-size20, 2px);
+	border: 1px solid var(--vscode-widget-border, var(--vscode-sideBar-border));
+	border-radius: var(--vscode-cornerRadius-large, 8px);
+	background: color-mix(in srgb, var(--vscode-sideBar-background) 88%, transparent);
+}
+
+.little-code .little-shell-button {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--vscode-spacing-size60, 6px);
+	min-width: 28px;
+	height: 26px;
+	padding: 0 var(--vscode-spacing-size80, 8px);
+	border: 1px solid transparent;
+	border-radius: var(--vscode-cornerRadius-medium, 6px);
+	background: transparent;
+	color: var(--vscode-descriptionForeground);
+	font-family: inherit;
+	font-size: var(--vscode-fontSize-label2, 11px);
+	font-weight: var(--vscode-fontWeight-regular, 400);
+	white-space: nowrap;
+	cursor: pointer;
+	outline-offset: 2px;
+	transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.little-code .little-shell-button:hover {
+	background: var(--vscode-toolbar-hoverBackground);
+	color: var(--vscode-foreground);
+	transform: translateY(-1px);
+}
+
+.little-code .little-shell-button:active {
+	transform: translateY(0);
+}
+
+.little-code .little-shell-button:focus-visible {
+	outline: 2px solid var(--vscode-focusBorder);
+}
+
+.little-code .little-shell-button.is-current {
+	background: color-mix(in srgb, var(--vscode-progressBar-background) 16%, var(--vscode-sideBar-background));
+	border-color: color-mix(in srgb, var(--vscode-progressBar-background) 36%, transparent);
+	color: var(--vscode-foreground);
+	font-weight: var(--vscode-fontWeight-semiBold, 600);
+}
+
+.little-code .little-shell-button.is-open:not(.is-current)::after {
+	content: '';
+	position: absolute;
+	bottom: 2px;
+	left: calc(50% - 2px);
+	width: 4px;
+	height: 2px;
+	border-radius: var(--vscode-cornerRadius-circle, 9999px);
+	background: var(--vscode-progressBar-background);
+}
+
+.little-code .little-appearance-button {
+	border-inline-start-color: var(--vscode-widget-border, var(--vscode-sideBar-border));
+	color: var(--vscode-icon-foreground);
+}
+
+.little-code .little-native-shell[data-density='icons'] .little-shell-button-label,
+.little-code .little-native-shell[data-density='compact'] .little-shell-button-label,
+.little-code .little-native-shell[data-density='compact'] .little-shell-brand > span {
+	display: none;
+}
+
+.little-code .little-native-shell[data-density='compact'] {
+	gap: var(--vscode-spacing-size40, 4px);
+}
+
+.little-code .little-native-shell[data-density='compact'] .little-shell-button {
+	padding-inline: var(--vscode-spacing-size60, 6px);
+}
+
+.little-code .part.titlebar .command-center .action-item.command-center-center {
+	width: min(24vw, 360px);
+	max-width: 100%;
+	min-width: 80px;
+	border-radius: var(--vscode-cornerRadius-circle, 9999px);
+	background-color: var(--vscode-commandCenter-background);
+}
+
+.little-code .part.titlebar .command-center .search-label {
+	font-size: var(--vscode-fontSize-label2, 11px);
+}
+
+/* Keep native sizing, badges, context menus, drag targets and keyboard movement. */
+.little-code .monaco-workbench .part.activitybar {
+	background-color: var(--vscode-titleBar-activeBackground) !important;
+	box-shadow: none;
+}
+
+.little-code .monaco-workbench .part.activitybar > .content {
+	box-sizing: border-box;
+	width: calc(100% - 8px);
+	height: calc(100% - 12px);
+	margin: var(--vscode-spacing-size60, 6px) var(--vscode-spacing-size40, 4px);
+	border-radius: var(--vscode-cornerRadius-xLarge, 12px);
+	background-color: var(--vscode-sideBar-background);
+	box-shadow: inset 0 0 0 1px var(--vscode-sideBar-border);
+}
+
+.little-code .monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .action-item {
+	height: var(--activity-bar-action-height, 48px);
+}
+
+.little-code .monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .action-label {
+	width: 100%;
+	height: calc(var(--activity-bar-action-height, 48px) - 8px);
+	margin-block: var(--vscode-spacing-size40, 4px);
+	border-radius: var(--vscode-cornerRadius-large, 8px);
+	transition: background-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.little-code .monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .action-item:hover .action-label {
+	background-color: var(--vscode-toolbar-hoverBackground);
+	transform: translateY(-1px);
+}
+
+.little-code .monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .action-item:is(.checked, .active) .action-label {
+	background-color: color-mix(in srgb, var(--vscode-progressBar-background) 14%, var(--vscode-activityBar-background));
+	box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--vscode-progressBar-background) 40%, transparent);
+}
+
+.little-code .monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .action-item:focus .action-label {
+	outline: 2px solid var(--vscode-focusBorder);
+	outline-offset: -2px;
+}
+
+.little-code .monaco-workbench .activitybar > .content :not(.monaco-menu) > .monaco-action-bar .active-item-indicator::before {
+	border-left: none;
+	border-right: none;
+}
+
+.little-code .part.activitybar .action-label:is(.codicon-explorer-view-icon, .codicon-search-view-icon, .codicon-source-control-view-icon, .codicon-run-view-icon, .codicon-extensions-view-icon)::before {
+	width: 24px;
+	height: 24px;
+}
+
+/* Native panels share a quiet card edge; tree rows and editor tabs remain native. */
+.little-code .monaco-workbench .part:is(.sidebar, .auxiliarybar, .panel) {
+	border-radius: var(--vscode-cornerRadius-xLarge, 12px);
+	box-shadow: inset 0 0 0 1px var(--vscode-sideBar-border);
+}
+
+.little-code .part:is(.sidebar, .auxiliarybar) > .title {
+	border-radius: var(--vscode-cornerRadius-xLarge, 12px) var(--vscode-cornerRadius-xLarge, 12px) 0 0;
+	background: var(--vscode-sideBarTitle-background, var(--vscode-sideBar-background));
+}
+
+.little-code .part:is(.sidebar, .auxiliarybar) .title-label h2 {
+	display: flex;
+	align-items: center;
+	gap: var(--vscode-spacing-size80, 8px);
+	text-transform: none;
+	letter-spacing: -.01em;
+	font-size: var(--vscode-fontSize-label1, 12px);
+	font-weight: var(--vscode-fontWeight-semiBold, 600);
+}
+
+.little-code .part:is(.sidebar, .auxiliarybar) .title-label h2::before {
+	content: '';
+	width: 4px;
+	height: 12px;
+	border-radius: var(--vscode-cornerRadius-circle, 9999px);
+	background: var(--vscode-progressBar-background);
+}
+
+.little-code .part:is(.sidebar, .auxiliarybar) .monaco-list-row {
+	border-radius: var(--vscode-cornerRadius-small, 4px);
+}
+
+.little-code .part:is(.sidebar, .auxiliarybar) .monaco-list-row:not(.focused):hover {
+	background-color: var(--vscode-list-hoverBackground);
+}
+
+.little-code .part.editor .tabs-container > .tab {
+	border-radius: var(--vscode-cornerRadius-medium, 6px) var(--vscode-cornerRadius-medium, 6px) 0 0;
+	border-right-color: transparent !important;
+	transition: background-color 140ms ease;
+}
+
+.little-code .part.editor .tabs-container > .tab.active {
+	box-shadow: inset 0 1px 0 var(--vscode-progressBar-background);
+}
+
+.little-code .part.statusbar .statusbar-item {
+	border-radius: var(--vscode-cornerRadius-small, 4px);
+	transition: background-color 140ms ease;
+}
+
+.little-code .part.panel > .title {
+	border-radius: var(--vscode-cornerRadius-xLarge, 12px) var(--vscode-cornerRadius-xLarge, 12px) 0 0;
+}
+
+.little-code .part:is(.sidebar, .auxiliarybar, .panel) > .content {
+	animation: little-surface-enter 160ms ease-out;
+}
+
+@keyframes little-surface-enter {
+	from { opacity: .7; }
+	to { opacity: 1; }
+}
+
+/* High contrast keeps explicit focus/selection strokes; motion follows user preferences. */
+.little-code .monaco-workbench:is(.hc-black, .hc-light) .little-shell-button.is-current {
+	border-color: var(--vscode-contrastActiveBorder, var(--vscode-focusBorder));
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.little-code .little-shell-button,
+	.little-code .part.activitybar .action-label,
+	.little-code .part.editor .tab,
+	.little-code .part.statusbar .statusbar-item {
+		transition: none !important;
+		transform: none !important;
+	}
+
+	.little-code .part:is(.sidebar, .auxiliarybar, .panel) > .content {
+		animation: none;
+	}
+}

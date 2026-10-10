@@ -1,0 +1,1 @@
+export const MAX_PROMPT_CHARACTERS = 12_000;

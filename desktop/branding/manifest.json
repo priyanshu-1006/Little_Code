@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "source": "User-supplied Little_code_logo.png overrides the PRD logo sketch. Product identity follows Little Code PRD §§ 2–6, 82, 91.",
+  "productOverrides": {
+    "enableTelemetry": false,
+    "agentsTelemetryAppName": "little-code",
+    "onboardingKeymaps": [{ "id": "vscode", "label": "Little Code", "description": "Standard editor keyboard mapping" }],
+    "onboardingThemes": [{ "id": "little-dark", "label": "Little Dark", "themeId": "Little Dark / Neo Aurora", "type": "dark" }, { "id": "little-light", "label": "Little Light", "themeId": "Little Light / Paper Aurora", "type": "light" }],
+    "builtInExtensionsEnabledWithAutoUpdates": [],
+    "trustedExtensionAuthAccess": {}
+  },
+  "productDeletes": [
+    "defaultChatAgent",
+    "voiceWsUrl",
+    "webviewContentExternalBaseUrlTemplate",
+    "updateUrl",
+    "downloadUrl",
+    "reportIssueUrl",
+    "releaseNotesUrl",
+    "configurationSync.store",
+    "aiConfig",
+    "experimentationServiceUrl",
+    "extensionRecommendations",
+    "extensionsGallery"
+  ],
+  "assetCopies": [
+    { "source": "resources/app/code.ico", "target": "resources/win32/code.ico" },
+    { "source": "resources/app/code.icns", "target": "resources/darwin/code.icns" },
+    { "source": "resources/app/little-code-70.png", "target": "resources/win32/code_70x70.png" },
+    { "source": "resources/app/little-code-150.png", "target": "resources/win32/code_150x150.png" },
+    { "source": "resources/app/little-code-512.png", "target": "resources/linux/code.png" },
+    { "source": "resources/app/little-code-192.png", "target": "resources/server/code-192.png" },
+    { "source": "resources/app/little-code-512.png", "target": "resources/server/code-512.png" },
+    { "source": "resources/app/code.ico", "target": "resources/server/favicon.ico" },
+    { "source": "resources/app/little-mark.svg", "target": "src/vs/workbench/browser/media/code-icon.svg" },
+    { "source": "resources/app/little-mark.svg", "target": "src/vs/sessions/browser/media/vscode-icon.svg" },
+    { "source": "resources/app/inno-big-100.bmp", "target": "resources/win32/inno-big-100.bmp" },
+    { "source": "resources/app/inno-big-125.bmp", "target": "resources/win32/inno-big-125.bmp" },
+    { "source": "resources/app/inno-big-150.bmp", "target": "resources/win32/inno-big-150.bmp" },
+    { "source": "resources/app/inno-big-175.bmp", "target": "resources/win32/inno-big-175.bmp" },
+    { "source": "resources/app/inno-big-200.bmp", "target": "resources/win32/inno-big-200.bmp" },
+    { "source": "resources/app/inno-big-225.bmp", "target": "resources/win32/inno-big-225.bmp" },
+    { "source": "resources/app/inno-big-250.bmp", "target": "resources/win32/inno-big-250.bmp" },
+    { "source": "resources/app/inno-small-100.bmp", "target": "resources/win32/inno-small-100.bmp" },
+    { "source": "resources/app/inno-small-125.bmp", "target": "resources/win32/inno-small-125.bmp" },
+    { "source": "resources/app/inno-small-150.bmp", "target": "resources/win32/inno-small-150.bmp" },
+    { "source": "resources/app/inno-small-175.bmp", "target": "resources/win32/inno-small-175.bmp" },
+    { "source": "resources/app/inno-small-200.bmp", "target": "resources/win32/inno-small-200.bmp" },
+    { "source": "resources/app/inno-small-225.bmp", "target": "resources/win32/inno-small-225.bmp" },
+    { "source": "resources/app/inno-small-250.bmp", "target": "resources/win32/inno-small-250.bmp" }
+  ],
+  "textPatches": [
+    {
+      "path": "build/lib/electron.ts",
+      "find": "companyName: 'Microsoft Corporation',",
+      "replace": "companyName: 'Priyanshu Chaurasia',"
+    },
+    {
+      "path": "build/lib/electron.ts",
+      "find": "copyright: 'Copyright (C) 2026 Microsoft. All rights reserved',",
+      "replace": "copyright: 'Copyright (C) 2026 Microsoft and Priyanshu Chaurasia. MIT licensed.',"
+    },
+    {
+      "path": "build/lib/electron.ts",
+      "find": "darwinHelpBookFolder: 'VS Code HelpBook',",
+      "replace": "darwinHelpBookFolder: 'Little Code HelpBook',"
+    },
+    {
+      "path": "build/lib/electron.ts",
+      "find": "darwinHelpBookName: 'VS Code HelpBook',",
+      "replace": "darwinHelpBookName: 'Little Code HelpBook',"
+    },
+    {
+      "path": "build/win32/code.iss",
+      "find": "AppPublisher=Microsoft Corporation",
+      "replace": "AppPublisher=Priyanshu Chaurasia"
+    },
+    {
+      "path": "build/win32/code.iss",
+      "find": "AppPublisherURL=https://code.visualstudio.com/",
+      "replace": "; Little Code does not inherit Microsoft's publisher website."
+    },
+    {
+      "path": "build/win32/code.iss",
+      "find": "AppSupportURL=https://code.visualstudio.com/",
+      "replace": "; Little Code support URL is configured when release infrastructure exists."
+    },
+    {
+      "path": "build/win32/code.iss",
+      "find": "AppUpdatesURL=https://code.visualstudio.com/",
+      "replace": "; Little Code updates are configured when release infrastructure exists."
+    },
+    {
+      "path": "build/win32/code.iss",
+      "find": "OutputBaseFilename=VSCodeSetup",
+      "replace": "OutputBaseFilename=LittleCodeSetup"
+    }
+  ]
+}
