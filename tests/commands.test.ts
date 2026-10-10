@@ -56,14 +56,33 @@ test('tool waits for explicit host approval and rejection produces no process si
   const { root, service, controller, command } = await fixture(t);
   await fs.writeFile(path.join(root, 'check.cjs'), "require('fs').writeFileSync('launched.txt', 'yes');");
   let resolveReview: ((value: { status: 'rejected'; exitCode: null; output: string; truncated: boolean; durationMs: number }) => void) | undefined;
-  const tool = createCommandTools(service, async () => new Promise(resolve => { resolveReview = resolve; }))[0]!;
+  let enteredReview!: () => void;
+  const reviewEntered = new Promise<void>(resolve => { enteredReview = resolve; });
+  const rejected = { status: 'rejected' as const, exitCode: null, output: '', truncated: false, durationMs: 0 };
+  const tool = createCommandTools(service, async () => new Promise(resolve => {
+    resolveReview = resolve;
+    enteredReview();
+    if (controller.signal.aborted) resolve(rejected);
+  }))[0]!;
   const running = tool.execute(command(['check.cjs']), { signal: controller.signal, runId: 'test-run' });
-  for (let retry = 0; !resolveReview && retry < 30; retry++) await new Promise(resolve => setTimeout(resolve, 10));
-  assert.ok(resolveReview);
-  await assert.rejects(fs.access(path.join(root, 'launched.txt')));
-  resolveReview({ status: 'rejected', exitCode: null, output: '', truncated: false, durationMs: 0 });
-  assert.equal((await running as { status: string }).status, 'rejected');
-  await assert.rejects(fs.access(path.join(root, 'launched.txt')));
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    await Promise.race([
+      reviewEntered,
+      running.then(() => { throw new Error('Command completed before host review.'); }),
+      new Promise<never>((_resolve, reject) => { timer = setTimeout(() => reject(new Error('Host review did not open within 10 seconds.')), 10000); }),
+    ]);
+    assert.ok(resolveReview);
+    await assert.rejects(fs.access(path.join(root, 'launched.txt')));
+    resolveReview(rejected);
+    assert.equal((await running as { status: string }).status, 'rejected');
+    await assert.rejects(fs.access(path.join(root, 'launched.txt')));
+  } finally {
+    clearTimeout(timer);
+    controller.abort();
+    resolveReview?.(rejected);
+    await running.catch(() => undefined);
+  }
 });
 
 test('real command captures both streams, nonzero exit, cwd, and redacts credentials before exposure', async t => {

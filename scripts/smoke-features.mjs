@@ -260,6 +260,7 @@ async function startApp(expected, deadline, report, extraArgs = [], options = {}
   const environment = { ...process.env, NODE_ENV: 'production' };
   for (const keyName of Object.keys(environment)) if (/^(?:ELECTRON_RUN_AS_NODE|VSCODE_DEV|NODE_OPTIONS|NODE_PATH)$/i.test(keyName) || /(?:API_?KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL)/i.test(keyName)) delete environment[keyName];
   const args = ['--new-window', `--user-data-dir=${path.join(profileRoot, 'user-data')}`, `--extensions-dir=${path.join(profileRoot, 'extensions')}`,
+    ...(extraArgs.some(argument => argument.startsWith('--shared-data-dir=')) ? [] : [`--shared-data-dir=${path.join(profileRoot, 'shared-data')}`]),
     `--remote-debugging-port=${port}`, '--remote-debugging-address=127.0.0.1', '--skip-release-notes',
     ...(options.enableWorkspaceTrust ? [] : ['--disable-workspace-trust']),
     ...(options.enableGit ? [] : ['--disable-extension=vscode.git']), ...extraArgs, fixtureRoot];

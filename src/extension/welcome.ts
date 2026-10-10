@@ -5,7 +5,7 @@ import { normalizeError } from '../little/shared/errors';
 import { GROQ_SECRET_KEY } from '../little/providers/groq';
 
 const WelcomeActionSchema = z.object({
-  type: z.enum(['ready', 'openProject', 'openRecent', 'configure', 'configureOllama', 'agent', 'terminal', 'toggleAppearance']),
+  type: z.enum(['ready', 'openProject', 'openRecent', 'configure', 'configureOllama', 'agent', 'terminal', 'toggleAppearance', 'createProject', 'runFile', 'flutterPreview', 'buildTools']),
 });
 
 /** Little's home lives in the native editor area; all actions use host services. */
@@ -91,6 +91,10 @@ export class LittleWelcome implements vscode.Disposable {
       case 'configureOllama': await this.configureOllama(); await this.snapshot(); break;
       case 'agent': await vscode.commands.executeCommand('little.openAgent'); break;
       case 'terminal': await vscode.commands.executeCommand('workbench.action.terminal.new'); break;
+      case 'createProject': await vscode.commands.executeCommand('little.createProject'); break;
+      case 'runFile': await vscode.commands.executeCommand('little.runFile'); break;
+      case 'flutterPreview': await vscode.commands.executeCommand('little.flutterPreview'); break;
+      case 'buildTools': await vscode.commands.executeCommand('little.openBuildTools'); break;
       case 'toggleAppearance': await vscode.commands.executeCommand('little.toggleAppearance'); break;
     }
     void this.panel?.webview.postMessage({ type: 'done' });
@@ -118,6 +122,8 @@ export class LittleWelcome implements vscode.Disposable {
       moon: 'M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5ZM17 3v4m-2-2h4',
     };
     const icon = (name: keyof typeof icons, className = '') => `<svg class="home-icon ${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${icons[name]}"></path></svg>`;
+    const version = String(this.context.extension.packageJSON.version ?? '');
+    const versionLabel = /^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?$/.test(version) ? version : 'development';
     return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource}; style-src ${webview.cspSource}; font-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
@@ -125,7 +131,7 @@ export class LittleWelcome implements vscode.Disposable {
 <body><main class="little-home">
   <aside class="home-nav" aria-label="Little navigation"><span class="nav-brand"><img src="${logo}" alt="Little Code" width="40" height="40"><span>Little<span class="nav-brand-dot">.</span></span></span><nav class="home-nav-items" aria-label="Workspace shortcuts"><span class="home-nav-item current" aria-current="page">${icon('home')}<span>Home</span></span><button class="home-nav-item" data-action="openProject" title="Open project">${icon('folder')}<span>Projects</span></button><button class="home-nav-item" data-action="agent" title="Focus Little Agent">${icon('agent')}<span>Little Agent</span></button><button class="home-nav-item" data-action="terminal" title="Open terminal">${icon('terminal')}<span>Terminal</span></button><button class="home-nav-item" data-action="openRecent" title="Open recent project">${icon('recent')}<span>Recent</span></button></nav><span class="nav-caption">A little spark.<br>A new possibility.</span></aside>
   <div class="home-content">
-  <header class="home-topline"><span class="home-wordmark"><span>Make room for your next idea.<small>YOUR LITTLE WORKSPACE</small></span></span><div class="home-header-actions"><span class="build-stage"><span class="build-node" aria-hidden="true"></span>PREVIEW · 0.1</span><button class="home-appearance" data-action="toggleAppearance" aria-label="Switch to light appearance" title="Light appearance">${icon('sun', 'appearance-sun')}${icon('moon', 'appearance-moon')}</button></div></header>
+  <header class="home-topline"><span class="home-wordmark"><span>Make room for your next idea.<small>YOUR LITTLE WORKSPACE</small></span></span><div class="home-header-actions"><span class="build-stage"><span class="build-node" aria-hidden="true"></span>PREVIEW · ${versionLabel}</span><button class="home-appearance" data-action="toggleAppearance" aria-label="Switch to light appearance" title="Light appearance">${icon('sun', 'appearance-sun')}${icon('moon', 'appearance-moon')}</button></div></header>
   <section class="home-intro" aria-labelledby="home-title">
     <div class="hero-copy">
       <p class="eyebrow"><span class="eyebrow-node" aria-hidden="true"></span>A LITTLE CONTEXT. A BIGGER PICTURE.</p>
@@ -144,6 +150,14 @@ export class LittleWelcome implements vscode.Disposable {
     </div>
     <div class="home-actions local-connection"><button class="home-secondary" data-action="configureOllama">${icon('local')}Use Ollama locally</button><span class="setup-status" id="provider-choice">Cloud or local. Your choice.</span></div>
     <p class="setup-privacy">Groq credentials stay in encrypted system storage. AI requests send selected project context to your chosen Groq Cloud or loopback Ollama provider.</p>
+  </section>
+  <section class="home-setup home-build" aria-labelledby="build-title">
+    <div class="setup-heading"><h2 id="build-title">From idea to first run.</h2><button class="home-secondary" data-action="buildTools">${icon('terminal')}Build tools</button></div>
+    <div class="setup-grid">
+      <button class="setup-card" data-action="createProject"><span class="card-icon">${icon('folder')}</span><span class="card-content"><span class="card-kicker">START WITH A TEMPLATE</span><strong>Create a project</strong><span>Choose a framework, language and starter. Little runs the setup with your approval.</span></span><span class="card-arrow">${icon('arrow')}</span></button>
+      <button class="setup-card" data-action="flutterPreview"><span class="card-icon">${icon('local')}</span><span class="card-content"><span class="card-kicker">SEE THE APP YOU BUILD</span><strong>Flutter preview</strong><span>Choose a real device, emulator or local web preview. Reload, restart and stop from Little.</span></span><span class="card-arrow">${icon('arrow')}</span></button>
+    </div>
+    <div class="home-actions local-connection"><button class="home-secondary" data-action="runFile">${icon('terminal')}Run current file</button><span class="setup-status">Installed language runtimes. Visible build output.</span></div>
   </section>
   <section class="home-workflow" aria-label="Available workflow">
     <div><span class="workflow-node" aria-hidden="true"></span><strong>Understand the project</strong><span>Ask · repository tools &amp; visible context</span></div>

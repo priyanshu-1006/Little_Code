@@ -26,7 +26,7 @@ git add .
 node scripts/repository-audit.mjs --staged
 git diff --cached --stat
 git diff --cached
-git commit -m "Prepare Little Code 0.2.0 and product showcase"
+git commit -m "Prepare Little Code 0.3.0 and product showcase"
 git push -u origin main
 ```
 
@@ -38,34 +38,34 @@ The verified current setup is:
 
 | Field | Value |
 | --- | --- |
-| Product | Little Code 0.2.0 preview |
+| Product | Little Code 0.3.0 preview |
 | Upstream | Code-OSS 1.141.0 |
 | Platform | Windows x64 user setup |
-| Asset | `LittleCode-0.2.0-CodeOSS-1.141.0-win32-x64-UserSetup.exe` |
-| Size | 347,143,376 bytes |
-| SHA-256 | `32ec825e0b94fadab7613dd453ca000c0aab5de19003b3bc65d11129b1a57369` |
+| Asset | `LittleCode-0.3.0-CodeOSS-1.141.0-win32-x64-UserSetup.exe` |
+| Size | 347,230,859 bytes |
+| SHA-256 | `d6c9f69746e2ffed717f7b0a5e96a3ce6bec55e4b8f119e78be12851a7baf9d3` |
 | Signing | Unsigned |
-| Local folder | `desktop/releases/2026-10-10T04-49-25-203Z-08a1f71c/` |
+| Local folder | `desktop/releases/2026-10-10T11-00-25-356Z-b6fb3b59/` |
 
 Keep the setup outside Git. GitHub blocks ordinary Git files over 100 MiB and supports distributing binaries through Releases; each release asset must be under 2 GiB. This installer fits Release distribution. See [GitHub file limits](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github) and [release limits](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases).
 
 Before upload:
 
 ```sh
-node scripts/github-release-check.mjs --installer=desktop/releases/2026-10-10T04-49-25-203Z-08a1f71c/LittleCode-0.2.0-CodeOSS-1.141.0-win32-x64-UserSetup.exe --sha256=32ec825e0b94fadab7613dd453ca000c0aab5de19003b3bc65d11129b1a57369
+node scripts/github-release-check.mjs --installer=desktop/releases/2026-10-10T11-00-25-356Z-b6fb3b59/LittleCode-0.3.0-CodeOSS-1.141.0-win32-x64-UserSetup.exe --sha256=d6c9f69746e2ffed717f7b0a5e96a3ce6bec55e4b8f119e78be12851a7baf9d3
 ```
 
 This verifies size, name, current version and the expected checksum; it does not replace the native acceptance receipts or code signing. For a new version, rebuild from its reviewed source, complete acceptance and update the verified metadata rather than reusing this checksum.
 
-Create a **draft** release tagged `v0.2.0` from the final source commit. Attach the verified `.exe`, [plain-text SHA256SUMS](SHA256SUMS) and [public-safe release notes](release-v0.2.0.md) describing preview status, supported platforms, signing status and current document limitations. Review the draft, then publish it. Do not label unbuilt macOS, Linux or ARM packages as available.
+Create a **draft** release tagged `v0.3.0` from the final source commit. Attach the verified `.exe`, [plain-text SHA256SUMS](SHA256SUMS) and [public-safe release notes](release-v0.3.0.md) describing preview status, supported platforms, signing status and current toolchain/document limitations. Review the draft, then publish it. Do not label unbuilt macOS, Linux or ARM packages as available.
 
 After the asset is published, the pinned direct download URL will be:
 
 ```text
-https://github.com/priyanshu-1006/Little_Code/releases/download/v0.2.0/LittleCode-0.2.0-CodeOSS-1.141.0-win32-x64-UserSetup.exe
+https://github.com/priyanshu-1006/Little_Code/releases/download/v0.3.0/LittleCode-0.3.0-CodeOSS-1.141.0-win32-x64-UserSetup.exe
 ```
 
-That URL is a publication target, not evidence an asset already exists. The website’s `website/product.json` holds repository and release metadata. Hosted download activation requires the published release tag and an uploaded asset whose filename, byte size and GitHub SHA-256 digest exactly match that metadata. The API digest must be `sha256:32ec825e0b94fadab7613dd453ca000c0aab5de19003b3bc65d11129b1a57369`; a missing or different digest leaves the direct download unavailable. The download URL must belong to this repository’s release path. A local development preview separately verifies and serves the setup on this machine.
+That URL is a publication target, not evidence an asset already exists. The website’s `website/product.json` holds repository and release metadata. Hosted download activation requires the published release tag and an uploaded asset whose filename, byte size and GitHub SHA-256 digest exactly match that metadata. The API digest must be `sha256:d6c9f69746e2ffed717f7b0a5e96a3ce6bec55e4b8f119e78be12851a7baf9d3`; a missing or different digest leaves the direct download unavailable. The download URL must belong to this repository’s release path. A local development preview separately verifies and serves the setup on this machine.
 
 GitHub computes SHA-256 digests when release assets are uploaded and exposes them in its Releases API and UI. Its API documents the `digest` and `browser_download_url` fields; this site compares published metadata rather than downloading the entire installer in the browser to hash it. See [GitHub’s digest announcement](https://github.blog/changelog/2025-06-03-releases-now-expose-digests-for-release-assets/), [release asset API](https://docs.github.com/en/rest/releases/assets) and [release linking](https://docs.github.com/en/repositories/releasing-projects-on-github/linking-to-releases).
 
@@ -114,6 +114,6 @@ Dependabot proposes weekly npm and Actions updates. Enable secret scanning and p
 
 Historical development documents link to `desktop/logs/` and `desktop/screenshots/`. Those links describe local verification receipts and will not resolve in a clean GitHub clone. Keeping those receipts local is intentional: they can contain usernames, fixture paths, user workspace information and diagnostic details.
 
-Use [the bounded release summary](release-v0.2.0.md) as the public record. It contains supported capabilities, installer/bundle checksums, observed counts, test scopes and remaining limitations without private paths, credentials, prompts or raw logs. The committed tests and smoke scripts are the reproduction instructions; a statement of earlier observed results is not a guarantee they will reproduce in every environment.
+Use [the current bounded release summary](release-v0.3.0.md) as the public record; [0.2 notes](release-v0.2.0.md) preserve earlier provider/file acceptance. They contain supported capabilities, installer/bundle checksums, observed counts, test scopes and remaining limitations without private paths, credentials, prompts or raw logs. The committed tests and smoke scripts are the reproduction instructions; earlier observed results do not guarantee reproduction in every environment.
 
 If publishing a curated JSON receipt or screenshot later, generate it from an explicit allowlist of public metadata, review its complete contents, run the repository audit and attach only that reviewed artifact. Do not copy an entire ignored directory into Git or a Release. Keep source/CI results, native UI fixtures, live-provider tests and installer lifecycle checks distinct in public claims.

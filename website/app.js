@@ -76,6 +76,45 @@ tabs.forEach((tab, index) => {
   });
 });
 
+// This catalog mirrors the desktop builder's curated choices. Selecting here
+// explains a workflow; it never installs a generator or creates project files.
+const frameworks = {
+  react: { title: 'React', language: 'TypeScript / JavaScript', description: 'Start with the official Vite-powered React starter, or choose its React Compiler template.', templates: ['Standard React', 'React Compiler'], requirement: 'Installed Node.js 20.19+ or 22.12+ and npm. Generator and dependency steps can access the network.' },
+  vue: { title: 'Vue', language: 'TypeScript / JavaScript', description: 'A Vue 3 starter powered by Vite, with your choice of TypeScript or JavaScript.', templates: ['Vue 3'], requirement: 'Installed Node.js 20.19+ or 22.12+ and npm. The wizard reviews generation and dependency installation separately.' },
+  vite: { title: 'Vite', language: 'TypeScript / JavaScript', description: 'Choose the shape of your frontend, from a small vanilla app to a component framework.', templates: ['Vanilla', 'Preact', 'Svelte', 'Solid', 'Lit', 'Qwik'], requirement: 'Installed Node.js 20.19+ or 22.12+ and npm. Six starters in two languages give you 12 combinations.' },
+  angular: { title: 'Angular', language: 'TypeScript', description: 'Generate an Angular application with routing and your choice of CSS or SCSS.', templates: ['CSS', 'SCSS'], requirement: 'The pinned creator requires Node.js 22.22.3+, 24.15+, or 26+, plus npm. Its version is checked before creation.' },
+  next: { title: 'Next.js', language: 'TypeScript / JavaScript', description: 'Choose App Router or Pages Router, then decide whether to include Tailwind CSS.', templates: ['App Router', 'Pages Router'], requirement: 'Installed Node.js 20.9+ and npm. Generation skips dependency installation until you approve the separate install step.' },
+  nest: { title: 'NestJS', language: 'TypeScript / JavaScript', description: 'Create a Node.js server using the official Nest starter in your preferred language.', templates: ['Standard server'], requirement: 'Installed Node.js 20.11+ and npm. The native task shows generator and dependency output.' },
+  python: { title: 'Python', language: 'Python', description: 'Start with a CLI, API, web app or data app in a project-local virtual environment.', templates: ['Python CLI', 'FastAPI', 'Flask', 'Django', 'Streamlit'], requirement: 'Installed Python 3.10+. The wizard creates .venv and installs approved dependencies there; packages run with your user permissions.' },
+  flutter: { title: 'Flutter', language: 'Dart', description: 'Create a starter app, empty app, reusable package or native plugin with your initialized Flutter SDK.', templates: ['Starter app', 'Empty app', 'Dart package', 'Native plugin'], requirement: 'Installed, initialized Flutter SDK. Generated platform folders still require their own SDKs and a supported host OS to build.', footnote: 'App templates can use Little: Flutter Preview. Packages and plugins use their own test or example-app workflows.' },
+  expo: { title: 'React Native · Expo', language: 'Template-dependent JS / TS', description: 'Create a mobile project using official Expo templates, from a blank screen to routed tabs.', templates: ['Default with Expo Router', 'Blank app', 'Tabs and routing', 'Native directories'], requirement: 'Installed Node.js and npm, plus the runtime requirements of your selected Expo template. Native builds require platform tools; iOS simulators require macOS.', footnote: 'Five available template/language combinations. Use Expo Go, its project tasks, or a configured native target.' },
+};
+const frameworkTabs = [...document.querySelectorAll('.framework-tab')];
+function selectFramework(tab, focus = false) {
+  const framework = frameworks[tab.dataset.framework];
+  if (!framework) return;
+  frameworkTabs.forEach((item) => { const selected = item === tab; item.classList.toggle('active', selected); item.setAttribute('aria-selected', String(selected)); item.tabIndex = selected ? 0 : -1; });
+  $('#framework-panel').setAttribute('aria-labelledby', tab.id);
+  $('#framework-title').textContent = framework.title;
+  $('#framework-language').textContent = framework.language;
+  $('#framework-description').textContent = framework.description;
+  $('#framework-requirement').textContent = framework.requirement;
+  $('#framework-footnote').textContent = framework.footnote || 'Use a new subfolder or an empty folder. Every generator and dependency command has its own native confirmation.';
+  $('#framework-templates').replaceChildren(...framework.templates.map((label) => { const element = document.createElement('span'); element.textContent = label; return element; }));
+  if (focus) tab.focus();
+}
+frameworkTabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => selectFramework(tab));
+  tab.addEventListener('keydown', (event) => {
+    let next;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % frameworkTabs.length;
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index - 1 + frameworkTabs.length) % frameworkTabs.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = frameworkTabs.length - 1;
+    if (next !== undefined) { event.preventDefault(); selectFramework(frameworkTabs[next], true); }
+  });
+});
+
 const captureDialog = $('#capture-dialog');
 let captureTrigger;
 document.querySelectorAll('[data-image]').forEach((button) => button.addEventListener('click', () => {
@@ -121,6 +160,11 @@ async function configureDownload() {
     if (!config || !/^[a-f0-9]{64}$/.test(config.sha256) || !Number.isSafeInteger(config.bytes) || !config.repository.startsWith('https://github.com/')) return;
     expectedChecksum = config.sha256; $('#checksum-value').textContent = config.sha256;
     document.querySelectorAll('[data-version]').forEach((element) => { element.textContent = config.version; });
+    const [major, minor] = config.version.split('.').map(Number);
+    if (major >= 1 || major === 0 && minor >= 3) {
+      $('#build-release-status').textContent = 'NEW / VERSION ' + config.version;
+      $('#build-availability').textContent = 'Framework builder, code runner and Flutter controls are included in the verified v' + config.version + ' Windows setup. Language runtimes and platform SDKs are installed separately.';
+    }
     const button = $('#download-setup'); button.href = config.releasePage;
     const loopback = ['127.0.0.1', 'localhost', '[::1]', '::1'].includes(location.hostname);
     if (loopback) {

@@ -24,6 +24,9 @@ import { createGitTools } from '../little/tools/git-tools';
 import { runReviewTeam } from '../little/agent/review-team';
 import { z } from 'zod';
 import { BrowserReviewHost } from './browser-review';
+import { registerProjectWizard } from '../development/projectWizard';
+import { registerLanguageRunner } from '../development/languageRunner';
+import { registerFlutterPreview } from '../development/flutterPreview';
 
 class HostSecrets implements SecretStore {
   constructor(private readonly secrets: vscode.SecretStorage) {}
@@ -507,6 +510,18 @@ export function activate(context: vscode.ExtensionContext): void {
   status.command = 'little.openAgent';
   status.show();
   context.subscriptions.push(panel, welcome, status,
+    registerProjectWizard(context), registerLanguageRunner(context), registerFlutterPreview(context),
+    vscode.commands.registerCommand('little.openBuildTools', async () => {
+      const tools = [
+        { label: '$(new-folder) New framework project', description: 'Web, Python, Flutter or React Native templates', command: 'little.createProject' },
+        { label: '$(play) Run current file', description: 'Check the runtime, compile if needed, and run', command: 'little.runFile' },
+        { label: '$(device-mobile) Flutter preview', description: 'Choose an installed device, emulator or local web preview', command: 'little.flutterPreview' },
+        { label: '$(tools) Inspect language runtimes', description: 'See installed compilers and interpreters', command: 'little.inspectRuntimes' },
+        { label: '$(package) Set up C / C++ toolchain', description: 'Review MinGW installation in an existing MSYS2 runtime', command: 'little.setupCppToolchain' },
+      ];
+      const selected = await vscode.window.showQuickPick(tools, { title: 'Little Build Tools', placeHolder: 'Start a project, run a file, or preview a Flutter app' });
+      if (selected) await vscode.commands.executeCommand(selected.command);
+    }),
     vscode.window.registerWebviewViewProvider('little.agent', panel),
     vscode.commands.registerCommand('little.openAgent', () => vscode.commands.executeCommand(
       nativeDesktop ? 'little.workbench.openAgent' : 'little.agent.focus',

@@ -2,6 +2,17 @@
 
 This records implemented product changes. Preview availability and supported platforms are stated in the release notes; roadmap items are not presented as delivered features.
 
+## 0.3.0 — Build tools preview
+
+- Explorer folder menu and Little Home project builder with 40 curated framework/template combinations, language choices and reviewed dependency installation.
+- React, Vue, Vite, Angular, Next.js, NestJS, Python, Flutter and React Native/Expo project plans, with project-local Python environments.
+- Saved-file runner for 19 language catalog entries, runtime discovery, reviewed compile/run tasks, line input, cancellation and custom interpreter configuration.
+- Windows MSYS2/MinGW setup with separately reviewed installation, first-login initialization and GCC package tasks.
+- Flutter SDK/device discovery, emulator launch, loopback web preview, hot reload, restart and stop controls.
+- Product showcase build-tools catalog and practical workflow documentation.
+
+Language SDKs remain external prerequisites. Actual React creation/install/build and native Node execution were exercised; other framework plans and Flutter protocol handling have fixture coverage. Flutter rendering, every language runtime and installer lifecycle acceptance still require additional environment-specific checks. See [build tools](docs/build-tools.md).
+
 ## 0.2.0 — File-aware agent preview
 
 - Dedicated notebook, DOCX, PPTX and PDF readers with bounded source evidence and citations.

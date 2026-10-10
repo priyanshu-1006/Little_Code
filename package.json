@@ -2,7 +2,7 @@
   "name": "little-code",
   "displayName": "Little Code",
   "description": "Your AI-native coding companion. Built by Priyanshu Chaurasia.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "priyanshu-chaurasia",
   "private": true,
   "engines": {
@@ -22,7 +22,7 @@
     "build": "node scripts/build.mjs",
     "watch": "node scripts/build.mjs --watch",
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test tests/*.test.ts",
+    "test": "tsx --test --test-concurrency=4 tests/*.test.ts",
     "lint": "eslint src tests",
     "check": "npm run typecheck && npm run lint && npm test && npm run build",
     "codeoss:setup": "node scripts/setup-codeoss.mjs",
@@ -33,6 +33,7 @@
     "desktop:smoke": "node scripts/smoke-desktop.mjs",
     "desktop:smoke-repository": "node scripts/smoke-desktop.mjs --repository",
     "desktop:smoke-commands": "node scripts/smoke-command-host.mjs",
+    "desktop:smoke-build-tools": "node scripts/smoke-build-tools.mjs",
     "desktop:smoke-features": "node scripts/smoke-features.mjs",
     "website:check": "node scripts/check-website.mjs",
     "website:build": "node scripts/build-website.mjs",
@@ -84,6 +85,48 @@
       {
         "command": "little.inspectBrowser",
         "title": "Little: Inspect Local App"
+      },
+      {
+        "command": "little.createProject",
+        "title": "Little: Create Framework Project",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "little.openBuildTools",
+        "title": "Little: Open Build Tools",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "little.runFile",
+        "title": "Little: Run Current File",
+        "icon": "$(play)"
+      },
+      {
+        "command": "little.inspectRuntimes",
+        "title": "Little: Inspect Language Runtimes"
+      },
+      {
+        "command": "little.setupCppToolchain",
+        "title": "Little: Set Up C / C++ Toolchain"
+      },
+      {
+        "command": "little.flutterPreview",
+        "title": "Little: Flutter Preview",
+        "icon": "$(device-mobile)"
+      },
+      {
+        "command": "little.flutterHotReload",
+        "title": "Little: Flutter Hot Reload",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "little.flutterRestart",
+        "title": "Little: Flutter Hot Restart"
+      },
+      {
+        "command": "little.flutterStop",
+        "title": "Little: Stop Flutter Preview",
+        "icon": "$(debug-stop)"
       }
     ],
     "viewsContainers": {
@@ -121,8 +164,39 @@
         "command": "little.openAgent",
         "key": "ctrl+alt+l",
         "mac": "cmd+alt+l"
+      },
+      {
+        "command": "little.runFile",
+        "key": "ctrl+alt+r",
+        "mac": "cmd+alt+r",
+        "when": "editorTextFocus && resourceScheme == file"
       }
     ],
+    "taskDefinitions": [
+      {
+        "type": "little-project",
+        "required": ["id"],
+        "properties": { "id": { "type": "string", "description": "A managed project setup step created after native review." } }
+      },
+      {
+        "type": "little-runner",
+        "required": ["file"],
+        "properties": { "file": { "type": "string", "description": "The saved file or toolchain action reviewed by Little Code." } }
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        { "command": "little.createProject", "when": "explorerResourceIsFolder && resourceScheme == file", "group": "navigation@8" },
+        { "command": "little.runFile", "when": "!explorerResourceIsFolder && resourceScheme == file", "group": "little@1" },
+        { "command": "little.flutterPreview", "when": "explorerResourceIsFolder && resourceScheme == file", "group": "little@2" }
+      ],
+      "editor/title": [
+        { "command": "little.runFile", "when": "resourceScheme == file && !isInDiffEditor", "group": "navigation@9" }
+      ],
+      "editor/context": [
+        { "command": "little.runFile", "when": "resourceScheme == file", "group": "little@1" }
+      ]
+    },
     "configuration": {
       "title": "Little Code",
       "properties": {
@@ -159,6 +233,41 @@
           "default": "",
           "description": "Optional personal conventions included in bounded context; never grants tool permissions.",
           "scope": "application"
+        },
+        "little.flutter.sdkPath": {
+          "type": "string",
+          "default": "",
+          "scope": "application",
+          "description": "Optional absolute Flutter SDK directory. Configure Flutter once using its official setup instructions; Little does not install an SDK silently."
+        },
+        "little.runner.runtimePaths": {
+          "type": "object",
+          "default": {},
+          "scope": "application",
+          "additionalProperties": { "type": "string" },
+          "description": "Optional absolute compiler/interpreter paths keyed by runtime name, such as python, gcc or node. Only your application settings can select executables."
+        },
+        "little.runner.arguments": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "scope": "application",
+          "description": "Arguments passed literally to your current file's program, shown in the execution review."
+        },
+        "little.runner.customRuntimes": {
+          "type": "object",
+          "default": {},
+          "scope": "application",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["executable", "args"],
+            "additionalProperties": false,
+            "properties": {
+              "executable": { "type": "string" },
+              "args": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "description": "Additional language IDs mapped to an absolute executable and literal args. Use ${file} and ${dir} placeholders. Custom commands require native review."
         },
         "little.browserEndpoint": {
           "type": "string",
