@@ -4,12 +4,12 @@ import { open, readFile } from 'node:fs/promises';
 import http from 'node:http';
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { isInside, readProduct, regularPath, websiteDist, websiteFiles, workspaceRoot } from './build-website.mjs';
 
 const contentTypes = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.txt': 'text/plain; charset=utf-8', '.md': 'text/plain; charset=utf-8' };
 const securityHeaders = {
-  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'",
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'X-Frame-Options': 'DENY',
@@ -44,13 +44,28 @@ function parseRange(header, bytes) {
   return { start, end };
 }
 
-export async function createWebsiteServer({ port = 4173 } = {}) {
+export async function createWebsiteServer({ port = 4173, reviewsOptions } = {}) {
   if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('Website port must be between 0 and 65535.');
   const { product, release } = await readProduct();
   const staticFiles = new Map((await websiteFiles(websiteDist)).map(entry => [`/${entry.relative}`, entry]));
   if (!staticFiles.has('/index.html') || !staticFiles.has('/release.json')) throw new Error('Build the website before starting its local server.');
   const builtRelease = JSON.parse(await readFile(path.join(websiteDist, 'release.json'), 'utf8'));
   if (JSON.stringify(builtRelease) !== JSON.stringify(release)) throw new Error('The website build is stale. Rebuild before previewing downloads.');
+  const routes = JSON.parse(await readFile(path.join(websiteDist, 'routes.json'), 'utf8'));
+  for (const route of routes) {
+    if (typeof route.pathname !== 'string' || !/^\/(?:docs(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)?|reviews)?$/.test(route.pathname)) throw new Error('Invalid generated application route.');
+    const entry = staticFiles.get(route.pathname === '/' ? '/index.html' : `${route.pathname}/index.html`);
+    if (!entry) throw new Error('A pre-rendered application route is missing.');
+    staticFiles.set(route.pathname, entry);
+    if (route.pathname !== '/') staticFiles.set(`${route.pathname}/`, entry);
+  }
+  let reviewsHandler = null;
+  try {
+    const reviewsPath = await regularPath(workspaceRoot, path.join(workspaceRoot, 'api', 'reviews.mjs'));
+    const reviewsModule = await import(pathToFileURL(reviewsPath).href);
+    reviewsHandler = reviewsOptions ? reviewsModule.createReviewsHandler(reviewsOptions) : reviewsModule.default;
+    if (typeof reviewsHandler !== 'function') throw new Error('Invalid reviews API handler.');
+  } catch (error) { if (error.code !== 'ENOENT') throw error; }
   let verifiedInstaller = null;
   let verification = null;
   let closing = false;
@@ -100,10 +115,25 @@ export async function createWebsiteServer({ port = 4173 } = {}) {
   const server = http.createServer(async (request, response) => {
     const method = request.method ?? 'GET';
     try {
-      if (method !== 'GET' && method !== 'HEAD') { reply(response, 405, 'Only GET and HEAD are supported.', method, { Allow: 'GET, HEAD' }); return; }
       let pathname;
       try { pathname = decodeURIComponent((request.url ?? '/').split(/[?#]/)[0]); } catch { reply(response, 400, 'Malformed request path.', method); return; }
       if (!pathname.startsWith('/') || pathname.includes('\\') || pathname.includes('\0') || pathname.split('/').some(segment => segment === '..' || segment === '.')) { reply(response, 400, 'Invalid request path.', method); return; }
+      if (pathname === '/api/reviews') {
+        for (const [key, value] of Object.entries(securityHeaders)) response.setHeader(key, value);
+        if (reviewsHandler) {
+          response.status = status => { response.statusCode = status; return response; };
+          response.json = body => {
+            const contents = Buffer.from(JSON.stringify(body));
+            response.setHeader('Content-Type', 'application/json; charset=utf-8');
+            response.setHeader('Content-Length', contents.length);
+            response.end(method === 'HEAD' ? undefined : contents);
+          };
+          await reviewsHandler(request, response);
+        }
+        else reply(response, 503, JSON.stringify({ configured: false, code: 'REVIEWS_UNAVAILABLE', message: 'Community reviews are not connected yet.' }), method, { 'Content-Type': 'application/json; charset=utf-8' });
+        return;
+      }
+      if (method !== 'GET' && method !== 'HEAD') { reply(response, 405, 'Only GET and HEAD are supported.', method, { Allow: 'GET, HEAD' }); return; }
       if (pathname === '/api/release') {
         let available = false;
         try { await currentInstaller(); available = true; } catch { /* Static publication remains useful without a local build artifact. */ }

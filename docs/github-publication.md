@@ -4,7 +4,7 @@ The prepared source repository targets the existing [priyanshu-1006/Little_Code 
 
 ## Review source before the first push
 
-The source includes the agent runtime, native integration patches, build scripts, tests, product documents, supplied branding, licensed fonts and static website. Large upstream checkouts, dependencies, generated bundles, machine shortcuts, installer/staging directories, smoke profiles, captured user screenshots, logs and credential files are ignored.
+The source includes the agent runtime, native integration patches, build scripts, tests, product documents, supplied branding, licensed fonts, React showcase and reviews API. Large upstream checkouts, dependencies, generated bundles, machine shortcuts, installer/staging directories, smoke profiles, captured user screenshots, logs and credential files are ignored.
 
 ```sh
 node scripts/repository-audit.mjs
@@ -71,7 +71,7 @@ GitHub computes SHA-256 digests when release assets are uploaded and exposes the
 
 ## Deploy the website on Vercel
 
-The website is independent static HTML/CSS/JavaScript. Source lives under `website/`; `npm run website:build` writes `website/dist/`, which is ignored. Deploy only the generated website; the installer remains a GitHub Release asset.
+The website is an independent React 19/TypeScript app with pre-rendered product, documentation and review pages. Source lives under `website/src/`; esbuild and React generate `website/dist/`, which is ignored. Vercel serves that static output and the separate `api/reviews.mjs` server function. The installer remains a GitHub Release asset.
 
 After pushing the reviewed repository, import `priyanshu-1006/Little_Code` in Vercel and use these settings:
 
@@ -81,12 +81,14 @@ After pushing the reviewed repository, import `priyanshu-1006/Little_Code` in Ve
 | Framework Preset | Other |
 | Build Command | `npm run website:build` |
 | Output Directory | `website/dist` |
-| Install Command | `node --version` |
+| Install Command | `npm ci` |
 | Node.js Version | 24.x |
 
-The root `vercel.json` records these build settings. The showcase build uses Node’s standard library, so the install command intentionally skips installing desktop/agent dependencies. Keep the Root Directory at the repository root because the build script and shared assets live outside `website/`. Vercel supports custom build/output settings and documents root-directory boundaries in [its build configuration guide](https://vercel.com/docs/builds/configure-a-build). Node.js 24.x is a supported Vercel version; see [the version guide](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
+The root `vercel.json` records these build settings. Install the root lockfile so React, React DOM and esbuild are available. Keep the Root Directory at the repository root: the build script, dependencies and API live outside `website/`. Known page routes receive their own generated HTML and route-specific metadata; unknown routes are not rewritten over missing APIs or assets. Vercel supports [custom build/output settings](https://vercel.com/docs/builds/configure-a-build), [rewrites](https://vercel.com/docs/routing/rewrites) and [Node functions](https://vercel.com/docs/functions/runtimes/node-js/advanced-node-configuration). Select Node 24.x in project settings and verify it against [Vercel's supported versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
 
-Deploy a preview first. Check desktop/mobile navigation, theme and motion preferences, the showcase controls and the actual published release download. No Groq, Ollama, MCP or user API credentials belong in Vercel environment variables for this static site. The local installer endpoint is for the local preview; it is not part of the hosted site.
+Deploy a preview first. Check desktop/mobile navigation, theme and motion preferences, direct `/docs` and guide links, documentation search, the review form and actual published release download. No Groq, Ollama, MCP or user API credentials belong in this website. The local installer endpoint is for the local preview; it is not part of the hosted site.
+
+For persistent reviews, follow [the database setup and moderation guide](../website/reviews/README.md). Add its Supabase URL, service-role key and review-IP salt as **server-only** Vercel environment variables, install the reviewed SQL schema, then redeploy. The service-role key must never be exposed through frontend environment-variable prefixes. New submissions are pending until the owner moderates them; only approved reviews affect public ratings. Without configuration the site explicitly reports reviews unavailable. Static product/docs browsing and release discovery still work.
 
 When ready, deploy the reviewed `main` branch to production. Vercel’s Git integration can produce subsequent previews and production deployments from repository changes; review its configured production branch. See [Vercel deployment guidance](https://vercel.com/docs/deployments).
 
@@ -94,7 +96,7 @@ For a custom domain, open the Vercel project’s **Settings → Domains**, add t
 
 ## Optional GitHub Pages deployment
 
-The manual Pages workflow is an alternative to Vercel. Its artifact contains only the same website output and never the installer or desktop profile.
+Vercel is the supported deployment target for the complete website. The manual Pages workflow publishes only static output: GitHub Pages does not execute the reviews API. Absolute asset and route URLs currently require an origin-root/custom-domain deployment; a repository-subdirectory Pages URL needs a configured asset/router base before use. The artifact never contains the installer or desktop profile.
 
 1. Push the reviewed repository and configure the release metadata in `website/product.json`.
 2. In the GitHub repository, open **Settings → Pages → Build and deployment → Source → GitHub Actions**.

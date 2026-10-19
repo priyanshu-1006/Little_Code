@@ -2,6 +2,16 @@
 
 This records implemented product changes. Preview availability and supported platforms are stated in the release notes; roadmap items are not presented as delivered features.
 
+## Website — React showcase and field guide
+
+- React 19/TypeScript showcase with 14 pre-rendered routes, responsive light/dark appearances and accessible product walkthroughs.
+- Dedicated searchable documentation: 11 guides, real product captures, installation/checksum instructions, navigation and copyable examples.
+- Verified GitHub Release download discovery and retained local installer identity/range checks.
+- Community ratings, filtering and moderated submissions through a Vercel API; optional Supabase storage, server-only configuration and moderation SQL.
+- Vercel build/routing configuration, website types/API/HTTP tests and an optional isolated browser acceptance script.
+
+Public review storage requires the documented owner configuration; new submissions remain pending until approved. Hosted Vercel/database delivery is separate from local and mocked acceptance.
+
 ## 0.3.0 — Build tools preview
 
 - Explorer folder menu and Little Home project builder with 40 curated framework/template combinations, language choices and reviewed dependency installation.

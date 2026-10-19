@@ -10,6 +10,8 @@ These are byte-for-byte copies of existing product resources and real native app
 
 Source evidence is retained privately in `desktop/logs/native-groq-smoke.json` and `desktop/logs/native-file-tools-smoke.json`. The latter covers native acceptance/rejection and exact-byte restoration separately. Authenticated live Groq reads and rejected proposals are recorded in `desktop/logs/groq-file-live-acceptance.json`; these screenshot fixtures do not establish accepted live-model edits.
 
+The React documentation also includes two real memory/MCP captures. See [their provenance and hashes](docs/PROVENANCE.md). Installation steps are clearly labeled process illustrations; they are not installer screenshots.
+
 ## Original artwork and fonts
 
 The logo comes from the user's `Little_code_logo.png`, whose SHA-256 is `cb43bcfe4ae81b14acb48e1f2a4f7493914d14b61a5bdc6e31ab168011e97060`. The existing platform resources preserve the full original canvas and colors using proportional resampling. The website copies the existing 512 px and 256 px transparent PNGs without further transformation.

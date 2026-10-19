@@ -39,7 +39,9 @@
     "website:build": "node scripts/build-website.mjs",
     "website:dev": "node scripts/serve-website.mjs",
     "repository:audit": "node scripts/repository-audit.mjs",
-    "release:check": "node scripts/github-release-check.mjs"
+    "release:check": "node scripts/github-release-check.mjs",
+    "website:typecheck": "tsc -p website/tsconfig.json --noEmit",
+    "website:test": "tsx --test tests/website-*.test.ts && node --test tests/website-*.test.mjs"
   },
   "contributes": {
     "configurationDefaults": {

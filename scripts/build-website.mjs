@@ -1,6 +1,9 @@
-import { lstat, mkdir, readFile, readdir, realpath, rm, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, mkdtemp, readFile, readdir, realpath, rm, writeFile } from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { build } from 'esbuild';
 
 export const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const websiteRoot = path.join(workspaceRoot, 'website');
@@ -77,7 +80,7 @@ function canonicalSite(env) {
   let url;
   try { url = new URL(configured); } catch { throw new Error('SITE_URL must be a valid HTTPS URL.'); }
   if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash || !url.hostname) throw new Error('SITE_URL must be an HTTPS URL without credentials, query or fragment.');
-  url.pathname = `${url.pathname.replace(/\/$/, '')}/`;
+  if (url.pathname !== '/') throw new Error('SITE_URL must name the website origin, without a subdirectory.');
   return url;
 }
 
@@ -85,26 +88,91 @@ function escapeAttribute(value) {
   return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 }
 
+export function documentRoutes(documents) {
+  if (!Array.isArray(documents) || documents.length < 1 || documents.length > 100) throw new Error('Expected a bounded documentation catalog.');
+  const routes = [
+    { pathname: '/', title: 'Little Code — Your idea, in motion.', description: 'Meet Little Code, your AI-native coding workspace. Explore the product, download the Windows preview, read the guides and share your experience.' },
+    { pathname: '/docs', title: 'Documentation · Little Code', description: 'Install Little Code, set up your AI provider and learn the editor, agent, notebooks, project creators and language runners with illustrated guides.' },
+    { pathname: '/reviews', title: 'Community reviews · Little Code', description: 'Read community experiences and share a rating and review of the Little Code Windows preview.' },
+  ];
+  const slugs = new Set();
+  for (const document of documents) {
+    if (!document || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(document.slug ?? '') || slugs.has(document.slug) || typeof document.title !== 'string' || !document.title.trim() || typeof document.description !== 'string' || !document.description.trim()) throw new Error('Invalid or duplicate documentation route.');
+    slugs.add(document.slug);
+    routes.push({ pathname: `/docs/${document.slug}`, title: `${document.title} · Little Code Docs`, description: document.description });
+  }
+  return routes;
+}
+
+function routeHtml(shell, markup, route, site) {
+  if (!shell.includes('<!--app-html-->')) throw new Error('The React HTML shell is missing its application marker.');
+  let html = shell.replace('<!--app-html-->', markup)
+    .replace(/<title>[^<]*<\/title>/i, `<title>${escapeAttribute(route.title)}</title>`)
+    .replace(/(<meta\b[^>]*(?:name|property)=["'](?:description|og:description|twitter:description)["'][^>]*\bcontent=)["'][^"']*["']/gi, `$1"${escapeAttribute(route.description)}"`)
+    .replace(/(<meta\b[^>]*(?:name|property)=["'](?:og:title|twitter:title)["'][^>]*\bcontent=)["'][^"']*["']/gi, `$1"${escapeAttribute(route.title)}"`)
+    .replace(/<link\b[^>]*\brel=["']canonical["'][^>]*>\s*/gi, '')
+    .replace(/<meta\b[^>]*(?:property|name)=["'](?:og:url|og:image|twitter:image)["'][^>]*>\s*/gi, '');
+  if (site) {
+    const url = escapeAttribute(new URL(route.pathname, site).href);
+    const image = escapeAttribute(new URL('/assets/workspace-home.png', site).href);
+    html = html.replace('</head>', `  <link rel="canonical" href="${url}">\n  <meta property="og:url" content="${url}">\n  <meta property="og:image" content="${image}">\n  <meta name="twitter:image" content="${image}">\n</head>`);
+  }
+  return html;
+}
+
 export async function buildWebsite(env = process.env) {
   const { release } = await readProduct();
   const published = new Map();
-  for (const name of ['index.html', 'styles.css', 'app.js']) {
-    const input = await regularPath(workspaceRoot, path.join(websiteRoot, name));
-    published.set(name, await readFile(input));
+  const shell = await readFile(await regularPath(workspaceRoot, path.join(websiteRoot, 'index.html')), 'utf8');
+  const main = await regularPath(workspaceRoot, path.join(websiteRoot, 'src', 'main.tsx'));
+  await regularPath(workspaceRoot, path.join(websiteRoot, 'src', 'prerender.tsx'));
+  await regularPath(workspaceRoot, path.join(websiteRoot, 'src', 'docs', 'catalog.ts'));
+  const define = { __LITTLE_RELEASE__: JSON.stringify(release), 'process.env.NODE_ENV': '"production"' };
+  const bundled = await build({
+    entryPoints: [main], bundle: true, write: false, outdir: websiteDist,
+    entryNames: 'app', assetNames: 'assets/build/[name]-[hash]', format: 'esm', platform: 'browser',
+    target: ['es2022'], jsx: 'automatic', minify: true, sourcemap: false, legalComments: 'eof',
+    metafile: true, define, external: ['/assets/*'], logLevel: 'silent',
+  });
+  for (const file of bundled.outputFiles) {
+    const relative = path.relative(websiteDist, file.path).split(path.sep).join('/');
+    if (!isInside(websiteDist, file.path)) throw new Error('Unexpected React bundle output.');
+    published.set(relative, Buffer.from(file.contents));
   }
+  if (!published.has('app.js') || !published.has('app.css')) throw new Error('The React entry must produce app.js and import its stylesheet.');
   for (const asset of await websiteFiles(path.join(websiteRoot, 'public'))) {
     if (!asset.relative.startsWith('assets/') || /(?:^|\/)\./.test(asset.relative) || /\.(?:exe|dll|pfx|pem|key|db|sqlite|map)$/i.test(asset.relative)) throw new Error('Unexpected file in public website assets.');
     published.set(asset.relative, await readFile(asset.file));
   }
   const site = canonicalSite(env);
-  if (site) {
-    const url = escapeAttribute(site.href);
-    const image = escapeAttribute(new URL('assets/workspace-home.png', site).href);
-    const html = published.get('index.html').toString('utf8')
-      .replace(/<link\b[^>]*\brel=["']canonical["'][^>]*>\s*/gi, '')
-      .replace(/<meta\b[^>]*(?:property|name)=["'](?:og:url|og:image|twitter:image)["'][^>]*>\s*/gi, '');
-    published.set('index.html', Buffer.from(html.replace('</head>', `  <link rel="canonical" href="${url}">\n  <meta property="og:url" content="${url}">\n  <meta property="og:image" content="${image}">\n  <meta name="twitter:image" content="${image}">\n</head>`)));
+  const rendering = await build({
+    stdin: { contents: "export { renderRoute } from './src/prerender.tsx'; export { documents } from './src/docs/catalog.ts';", resolveDir: websiteRoot, sourcefile: 'render-entry.ts' },
+    bundle: true, write: false, format: 'cjs', platform: 'node', target: 'node22',
+    jsx: 'automatic', define, logLevel: 'silent',
+    plugins: [{ name: 'omit-render-styles', setup(builder) { builder.onLoad({ filter: /\.css$/ }, () => ({ contents: '', loader: 'js' })); } }],
+  });
+  const temporary = await mkdtemp(path.join(os.tmpdir(), 'little-code-website-render-'));
+  const requireRenderer = createRequire(import.meta.url);
+  const renderFile = path.join(temporary, 'render.cjs');
+  let routes;
+  try {
+    await writeFile(renderFile, rendering.outputFiles[0].contents);
+    // This output is deliberately CommonJS. Loading its exact exports avoids
+    // ESM loader wrappers changing the default shape under tsx or test runners.
+    const renderer = requireRenderer(renderFile);
+    if (typeof renderer.renderRoute !== 'function') throw new Error('Expected a React route renderer.');
+    routes = documentRoutes(renderer.documents);
+    for (const route of routes) {
+      const markup = await renderer.renderRoute(route.pathname);
+      if (typeof markup !== 'string' || !markup.includes('<')) throw new Error('React route rendering returned no markup.');
+      const relative = route.pathname === '/' ? 'index.html' : `${route.pathname.slice(1)}/index.html`;
+      published.set(relative, Buffer.from(routeHtml(shell, markup, route, site)));
+    }
+  } finally {
+    delete requireRenderer.cache[renderFile];
+    await rm(temporary, { recursive: true, force: true });
   }
+  published.set('routes.json', Buffer.from(`${JSON.stringify(routes, null, 2)}\n`));
   published.set('release.json', Buffer.from(`${JSON.stringify(release, null, 2)}\n`));
   const bytes = [...published.values()].reduce((total, value) => total + value.length, 0);
   if (bytes > maxWebsiteBytes) throw new Error('Static website exceeds the 10 MiB publication limit.');
@@ -120,7 +188,7 @@ export async function buildWebsite(env = process.env) {
     await mkdir(path.dirname(output), { recursive: true });
     await writeFile(output, contents);
   }
-  return { files: published.size, bytes, version: release.version, canonical: site?.href ?? null };
+  return { files: published.size, bytes, routes: routes.length, version: release.version, canonical: site?.href ?? null };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

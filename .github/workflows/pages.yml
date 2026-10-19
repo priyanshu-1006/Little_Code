@@ -24,7 +24,8 @@ jobs:
         with:
           node-version: '24'
           package-manager-cache: false
-      - name: Check and build static showcase
+      - run: npm ci
+      - name: Check and build React showcase
         run: |
           npm run website:check
           npm run website:build

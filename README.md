@@ -10,17 +10,20 @@ The **ASK**, **PLAN**, controlled **EDIT**, and supervised **AGENT** foundation 
 
 ## Product showcase and GitHub
 
-The [product showcase](website/README.md) is a separate responsive website with the supplied logo, real app captures, an interactive four-mode tour, a browsable framework catalog, runner/Flutter workflows, project journey, light/dark appearances and Windows download requirements. It is prepared for **Vercel** and [priyanshu-1006/Little_Code](https://github.com/priyanshu-1006/Little_Code).
+The [React product showcase](website/README.md) includes the supplied logo, real app captures, interactive modes/frameworks, project journey, light/dark appearances and verified Windows downloads. A dedicated searchable documentation area contains 11 illustrated guides. Community ratings and moderated submissions use a Vercel API with optional persistent Supabase storage. It is prepared for **Vercel** and [priyanshu-1006/Little_Code](https://github.com/priyanshu-1006/Little_Code).
 
-Preview it from this repository with Node 22 or newer; no website dependency installation is needed:
+Preview it from this repository with Node 22 or newer (Node 24 recommended):
 
 ~~~powershell
+npm.cmd ci
 npm.cmd run website:check
-npm.cmd run website:build
+npm.cmd run website:typecheck
 npm.cmd run website:dev
 ~~~
 
 Open **http://127.0.0.1:4173**. The local preview enables setup downloads only after checking the configured file's size and SHA-256. The hosted site enables a direct download only when a matching GitHub Release asset is published with the verified name, size and digest. Installers, dependencies, upstream builds, private profiles and raw diagnostic receipts stay outside Git. See [GitHub and Vercel publication](docs/github-publication.md), [website maintenance](docs/website.md), [domain choices](docs/domains.md), [current 0.3 release notes](docs/release-v0.3.0.md) and the [historical 0.2 summary](docs/release-v0.2.0.md). Preparation has not committed or pushed these changes, uploaded the setup or deployed the site.
+
+To accept real public reviews, apply the [reviews database schema and server settings](website/reviews/README.md). Without that configuration, the page reports the unavailable service and shows no invented ratings. Newly submitted reviews remain pending until the owner approves them. Run `npm run website:test` for the dedicated API, download and HTTP integration checks.
 
 ## Open Little Code
 

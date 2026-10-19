@@ -36,4 +36,8 @@ jobs:
         run: npm run check
       - name: Check and build the showcase
         run: npm run website:check
+      - name: Check React website types
+        run: npm run website:typecheck
+      - name: Website HTTP and packaging integration tests
+        run: node --test tests/website-*.test.mjs
       - run: npm run website:build
