@@ -52,6 +52,9 @@ Vercel runs the API separately from static files. Other static hosts can serve p
 | `src/docs/` | Documentation catalog and illustrated guide screens |
 | `src/components/` | Download and community review interactions |
 | `src/styles.css` | Responsive themes, motion and focus styles |
+| `src/tactile.css` | Shared material surfaces, readable type scale and responsive refinements |
+| `src/components/SiteHeader.tsx` | Tactile navbar, accessible product disclosure and mobile navigation |
+| `src/docs/field-guide.css` | Article sheets, reading measures, figures and responsive documentation |
 | `index.html` | HTML metadata and React shell |
 | `product.json` | Pinned verified installer metadata; local path stays private |
 | `public/assets/` | Logo, reviewed captures, fonts, licenses and provenance |

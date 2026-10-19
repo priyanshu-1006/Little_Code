@@ -10,7 +10,7 @@ These are byte-for-byte copies of existing product resources and real native app
 
 Source evidence is retained privately in `desktop/logs/native-groq-smoke.json` and `desktop/logs/native-file-tools-smoke.json`. The latter covers native acceptance/rejection and exact-byte restoration separately. Authenticated live Groq reads and rejected proposals are recorded in `desktop/logs/groq-file-live-acceptance.json`; these screenshot fixtures do not establish accepted live-model edits.
 
-The React documentation also includes two real memory/MCP captures. See [their provenance and hashes](docs/PROVENANCE.md). Installation steps are clearly labeled process illustrations; they are not installer screenshots.
+The React documentation also includes four real memory, MCP, model-discovery and provider-cooldown captures. See [their provenance and hashes](docs/PROVENANCE.md). Installation steps are clearly labeled process illustrations; they are not installer screenshots.
 
 ## Original artwork and fonts
 

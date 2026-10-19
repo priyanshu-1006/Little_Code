@@ -3,6 +3,7 @@ import { release } from '../release';
 import { docsArticles, docsGroups } from './content';
 import type { DocsArticle } from './content';
 import './docs.css';
+import './field-guide.css';
 
 function Icon({ name, className = '' }: { name: 'search' | 'arrow' | 'menu' | 'sun' | 'moon' | 'book' | 'close' | 'download' | 'chevron'; className?: string }) {
   const paths: Record<string, ReactNode> = {
@@ -30,6 +31,7 @@ export default function DocsApp({ slug }: { slug?: string }) {
   const [activeSection, setActiveSection] = useState('');
   const [dark, setDark] = useState(false);
   const search = useRef<HTMLInputElement>(null);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
   const normalized = query.toLocaleLowerCase().trim();
   const matches = useMemo(() => {
     if (!normalized) return [];
@@ -45,7 +47,7 @@ export default function DocsApp({ slug }: { slug?: string }) {
   useEffect(() => {
     function keyboard(event: KeyboardEvent) {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); search.current?.focus(); }
-      if (event.key === 'Escape') { setMenuOpen(false); setQuery(''); }
+      if (event.key === 'Escape') { if (document.activeElement?.closest('.docs-sidebar')) menuTrigger.current?.focus(); setMenuOpen(false); setQuery(''); }
     }
     const syncTheme = () => setDark(document.documentElement.dataset.theme === 'dark');
     window.addEventListener('keydown', keyboard);
@@ -67,9 +69,9 @@ export default function DocsApp({ slug }: { slug?: string }) {
     <header className="docs-header"><div className="docs-header-inner">
       <a className="docs-brand" href="/" aria-label="Little Code home"><img src="/assets/little-code-icon.png" width="36" height="36" alt="" /><span>Little Code<span className="docs-brand-divider" aria-hidden="true">/</span><span className="docs-brand-guide">Field guide</span></span></a>
       <div className="docs-search"><Icon name="search" /><label className="docs-sr-only" htmlFor="docs-search-input">Search documentation</label><input id="docs-search-input" ref={search} value={query} placeholder="Find something…" autoComplete="off" aria-controls={normalized ? 'docs-search-results' : undefined} onChange={event => setQuery(event.target.value)} onKeyDown={event => { if (event.key === 'Enter' && matches[0]) window.location.assign(`/docs/${matches[0].slug}`); }} /><kbd>Ctrl K</kbd>{normalized && <div id="docs-search-results" className="docs-search-results"><p className="docs-search-count" role="status">{matches.length ? `${matches.length} ${matches.length === 1 ? 'guide' : 'guides'} found` : 'No guides found. Try a different term.'}</p>{matches.map(item => <a key={item.slug} href={`/docs/${item.slug}`}><strong>{item.title}</strong><span>{item.description}</span><Icon name="arrow" /></a>)}</div>}</div>
-      <nav className="docs-header-nav" aria-label="Documentation header"><a href="/">Product <span aria-hidden="true">↗</span></a><button className="docs-theme" type="button" onClick={toggleTheme} aria-label={dark ? 'Switch to light appearance' : 'Switch to dark appearance'}><Icon name={dark ? 'sun' : 'moon'} /></button><a className="docs-download" href="/#download"><Icon name="download" /><span>Download</span></a></nav>
+      <nav className="docs-header-nav" aria-label="Documentation header"><a href="/">Product <span aria-hidden="true">↗</span></a><button className="docs-theme" type="button" onClick={toggleTheme} aria-label={dark ? 'Switch to light appearance' : 'Switch to dark appearance'}><Icon name={dark ? 'sun' : 'moon'} /></button><a className="docs-download" href="/#download" aria-label="Download Little Code"><Icon name="download" /><span>Download</span></a></nav>
     </div></header>
-    <div className="docs-mobile-bar"><button type="button" aria-expanded={menuOpen} aria-controls="docs-sidebar" onClick={() => setMenuOpen(!menuOpen)}><Icon name={menuOpen ? 'close' : 'menu'} />Browse documentation</button><span>v{release.version}</span></div>
+    <div className="docs-mobile-bar"><button ref={menuTrigger} type="button" aria-expanded={menuOpen} aria-controls="docs-sidebar" onClick={() => setMenuOpen(!menuOpen)}><Icon name={menuOpen ? 'close' : 'menu'} />{menuOpen ? 'Close documentation menu' : 'Browse documentation'}</button><span>v{release.version}</span></div>
     <div className={`docs-layout ${!article ? 'docs-layout-overview' : ''}`}>
       <aside className={`docs-sidebar ${menuOpen ? 'docs-sidebar-open' : ''}`} id="docs-sidebar"><nav aria-label="Documentation chapters"><a className={`docs-overview-link ${!slug ? 'docs-nav-active' : ''}`} aria-current={!slug ? 'page' : undefined} href="/docs"><Icon name="book" />Documentation</a>{docsGroups.map(group => <div className="docs-nav-group" key={group}><p>{group}</p>{docsArticles.filter(item => item.group === group).map(item => <a key={item.slug} href={`/docs/${item.slug}`} aria-current={item.slug === slug ? 'page' : undefined} className={item.slug === slug ? 'docs-nav-active' : ''}>{item.title}<Icon name="chevron" /></a>)}</div>)}</nav><div className="docs-version-note"><span className="docs-version-dot" />{release.version} · Windows preview<p>Small steps.<br />Real understanding.</p><a href={`${release.repository}/issues`} target="_blank" rel="noreferrer">Need a hand? <span aria-hidden="true">↗</span></a></div></aside>
       <main className="docs-content" id="docs-content" tabIndex={-1}>
@@ -78,10 +80,10 @@ export default function DocsApp({ slug }: { slug?: string }) {
           <div className="docs-quick-links"><a href="/docs/installation"><span className="docs-quick-icon"><Icon name="download" /></span><div><strong>A fresh start</strong><span>Download, verify & install</span></div><Icon name="arrow" /></a><a href="/docs/first-conversation"><span className="docs-quick-icon docs-quick-purple">✧</span><div><strong>Meet your model</strong><span>Groq Cloud or local Ollama</span></div><Icon name="arrow" /></a><a href="/docs/troubleshooting"><span className="docs-quick-icon docs-quick-orange">?</span><div><strong>Find your way back</strong><span>Errors, retries & saved chats</span></div><Icon name="arrow" /></a></div>
           {docsGroups.map((group, groupIndex) => <section className="docs-chapter" key={group}><div className="docs-chapter-heading"><span>CHAPTER {String(groupIndex + 1).padStart(2, '0')}</span><h2>{group}</h2><span className="docs-chapter-line" /></div><div className="docs-guide-grid">{docsArticles.filter(item => item.group === group).map(item => <ArticleCard article={item} index={docsArticles.indexOf(item)} key={item.slug} />)}</div></section>)}
           <div className="docs-bottom-note"><Icon name="book" /><div><strong>Written for the product that exists.</strong><p>These guides distinguish implemented workflows from release acceptance, and real native screenshots from illustrations. The current preview is Windows x64.</p></div></div>
-        </> : article ? <article>
+        </> : article ? <article className="docs-article-sheet">
           <div className="docs-breadcrumb"><a href="/docs">Documentation</a><span aria-hidden="true">/</span><span>{article.group}</span></div>
           <header className="docs-article-header"><div className="docs-article-meta"><span>GUIDE {String(articleIndex + 1).padStart(2, '0')}</span><span>{article.minutes} MIN READ</span><span>v{release.version}</span></div><h1>{article.title}</h1><p>{article.description}</p></header>
-          <details className="docs-mobile-toc"><summary>On this page</summary><nav aria-label="On this page, mobile">{article.sections.map(section => <a key={section.id} href={`#${section.id}`}>{section.title}</a>)}</nav></details>
+          <div className="docs-article-overview"><div><Icon name="book" /><span>IN THIS GUIDE</span></div><nav aria-label="In this guide">{article.sections.map((section, index) => <a key={section.id} href={`#${section.id}`}><span>{String(index + 1).padStart(2, '0')}</span>{section.title}<Icon name="arrow" /></a>)}</nav></div>
           <div className="docs-article-body">{article.sections.map(section => <section className="docs-section" key={section.id}><h2 id={section.id}><a href={`#${section.id}`}>{section.title}<span aria-hidden="true">#</span></a></h2>{section.content}</section>)}</div>
           <div className="docs-article-source"><span>Grounded in the Little Code product source.</span><a href={article.source} target="_blank" rel="noreferrer">View source guide <span aria-hidden="true">↗</span></a></div>
           <nav className="docs-pagination" aria-label="Previous and next guide">{previous ? <a href={`/docs/${previous.slug}`}><span>← Previous guide</span><strong>{previous.title}</strong></a> : <a href="/docs"><span>← Back to</span><strong>All documentation</strong></a>}{next ? <a href={`/docs/${next.slug}`}><span>Next guide →</span><strong>{next.title}</strong></a> : <a href="/#download"><span>Ready for the next step? ↗</span><strong>Get Little Code</strong></a>}</nav>

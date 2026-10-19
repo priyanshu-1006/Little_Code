@@ -4,6 +4,7 @@ This records implemented product changes. Preview availability and supported pla
 
 ## Website — React showcase and field guide
 
+- Tactile material styling, larger responsive typography, a floating product-navigation bar and clearer article formatting with seven real product captures.
 - React 19/TypeScript showcase with 14 pre-rendered routes, responsive light/dark appearances and accessible product walkthroughs.
 - Dedicated searchable documentation: 11 guides, real product captures, installation/checksum instructions, navigation and copyable examples.
 - Verified GitHub Release download discovery and retained local installer identity/range checks.
